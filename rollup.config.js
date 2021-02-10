@@ -1,11 +1,14 @@
 import typescript from '@rollup/plugin-typescript';
-import {nodeResolve} from '@rollup/plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import svelte from "rollup-plugin-svelte";
+import autoPreprocess from "svelte-preprocess";
+import copy from "rollup-plugin-copy";
 
 export default {
-  input: 'main.ts',
+  input: 'src/index.ts',
   output: {
-    dir: '.',
+    file: 'dist/main.js',
     sourcemap: 'inline',
     format: 'cjs',
     exports: 'default'
@@ -13,7 +16,21 @@ export default {
   external: ['obsidian'],
   plugins: [
     typescript(),
-    nodeResolve({browser: true}),
+    resolve({
+      browser: true,
+      dedupe: ["svelte"],
+    }),
     commonjs(),
+    svelte({
+      preprocess: autoPreprocess(),
+    }),
+    copy({
+      targets: [
+        {
+          src: "manifest.json",
+          dest: "dist/",
+        },
+      ],
+    }),
   ]
 };
