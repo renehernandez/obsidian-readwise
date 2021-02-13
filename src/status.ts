@@ -1,5 +1,6 @@
 import type { DateTime } from 'luxon';
 import type ObsidianReadwisePlugin from '.';
+import Log from './log';
 
 export enum PluginState {
     idle,
@@ -61,10 +62,11 @@ export class StatusBar {
 
     private displayFromNow(timestamp: DateTime): void {
         if (timestamp) {
-            let fromNow = timestamp.diffNow()
-            this.statusBarEl.setText(`git: last update ${fromNow}..`);
+            let moment = (window as any).moment;
+            let fromNow = moment(timestamp).fromNow();
+            this.statusBarEl.setText(`readwise: last update ${fromNow}..`);
         } else {
-            this.statusBarEl.setText(`git: ready`);
+            this.statusBarEl.setText(`readwise: ready`);
         }
     }
 }

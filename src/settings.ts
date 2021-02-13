@@ -1,5 +1,5 @@
 import type { DateTime } from "luxon";
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
 
 
@@ -21,7 +21,6 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
         this.apiTokenSetting();
         this.syncArticles();
         this.syncTweets();
-        this.syncIntervalSetting();
         this.syncOnBoot();
         this.notificationSettings();
 	}
@@ -80,36 +79,6 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             }));
     }
 
-    syncIntervalSetting() {
-		new Setting(this.containerEl)
-			.setName('Sync Interval')
-			.setDesc('Sync against the Readwise API every X hours. To disable automatic sync, specify a negative value or zero (default)')
-			.addText(toggle => toggle
-				.setValue(String(this.plugin.settings.syncInterval))
-				.onChange(async (value) => {
-					if (!isNaN(Number(value))) {
-						this.plugin.settings.syncInterval = Number(value);
-
-						if (this.plugin.settings.syncInterval > 0) {
-							this.plugin.disableAutoSync(); // call clearInterval() before setting up a new one
-							this.plugin.enableAutoSync();
-							new Notice(
-								`Automatic sync enabled! Every ${this.plugin.settings.syncInterval} hours.`
-							);
-						}
-						else if (this.plugin.settings.syncInterval <= 0 && this.plugin.intervalID) {
-							this.plugin.disableAutoSync();
-							new Notice("Automatic sync disabled!");
-						}
-
-						await this.plugin.saveSettings();
-					}
-					else {
-						new Notice("Please specify a valid number.");
-					}
-			}));
-    }
-
     syncOnBoot() {
         new Setting(this.containerEl)
             .setName('Sync on Startup')
@@ -136,7 +105,6 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 }
 
 export class ObsidianReadwiseSettings {
-	syncInterval: number = 0;
 	syncOnBoot: boolean = false;
     lastUpdate: DateTime;
 	disableNotifications: boolean = false;

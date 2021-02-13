@@ -5,7 +5,7 @@ import { PluginState, StatusBar } from './status';
 import { ReadwiseApi, DocumentCategory } from './api/api';
 import { getTokenPath, getSecretsDirPath } from './utils';
 import ReadwiseApiTokenModal from "./modals/enterApiToken/tokenModal";
-import { debug, error } from "./log";
+import Log from "./log";
 import { Result } from "./result";
 
 const fs = require("fs");
@@ -53,7 +53,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             const apiInitialized = await this.initializeApi();
 
             if (!apiInitialized) {
-                debug("Starting Modal to ask for token")
+                Log.debug("Starting Modal to ask for token")
                 const tokenModal = new ReadwiseApiTokenModal(this.app);
                 await tokenModal.waitForClose;
                 const token = tokenModal.token;
@@ -68,7 +68,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
                 await this.initializeApiWithToken(token)
             }
         } catch (e) {
-            error({message: e.message, context: e});
+            Log.error({message: e.message, context: e});
             this.displayError(`Unexpected error: ${e.message}`);
 
             return;
@@ -83,10 +83,6 @@ export default class ObsidianReadwisePlugin extends Plugin {
 				this.displayMessage(message);
 			});
 		}
-
-		if (this.settings.syncInterval > 0) {
-			this.enableAutoSync();
-		}
 	}
 
 	async onunload() {
@@ -100,26 +96,6 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
-
-	//#region auto sync methods
-	disableAutoSync(): boolean {
-        if (this.intervalID) {
-            clearInterval(this.intervalID);
-            return true;
-        }
-
-        return false;
-    }
-
-	enableAutoSync() {
-        let hours = this.settings.syncInterval;
-        this.intervalID = window.setInterval(
-            async () => await this.syncReadwise(),
-            hours * 3600
-        );
-        this.registerInterval(this.intervalID);
-    }
-	//#endregion
 
     async syncReadwise(): Promise<number> {
         const results = await this.checkReadwise()
@@ -156,7 +132,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             return true;
         }
         catch (e) {
-            error({message: e.message, context: e})
+            Log.error({message: e.message, context: e})
             return false;
         }
     }
@@ -184,7 +160,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         const secretsDir = getSecretsDirPath();
 
         if (!(await this.app.vault.adapter.exists(secretsDir))) {
-            debug("Creating secrets dir")
+            Log.debug("Creating secrets dir")
             await this.app.vault.adapter.mkdir(secretsDir);
         }
     }
@@ -197,14 +173,14 @@ export default class ObsidianReadwisePlugin extends Plugin {
 			new Notice(message);
 		}
 
-		debug(message);
+		Log.debug(message);
 	}
 
 	displayError(message: string, timeout: number = 0): void {
         new Notice(message);
         this.statusBar.displayMessage(message.toLowerCase(), timeout);
 
-        debug(message)
+        Log.debug(message)
     }
 
 	//#endregion

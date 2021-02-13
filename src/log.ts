@@ -3,21 +3,24 @@ interface LogMessage {
     context: object
 }
 
-export function debug(log: string | LogMessage) {
-    if (isComplexLog(log)) {
-        printComplexLog("debug", log)
-    }
-    else {
-        print("debug", log);
-    }
-}
+export default class Log {
 
-export function error(log: string | LogMessage) {
-    if (isComplexLog(log)) {
-        printComplexLog("error", log);
+    static debug(log: string | LogMessage) {
+        if (isComplexLog(log)) {
+            printComplexLog("debug", log)
+        }
+        else {
+            print("debug", log);
+        }
     }
-    else {
-        print("error", log);
+
+    static error(log: string | LogMessage) {
+        if (isComplexLog(log)) {
+            printComplexLog("error", log);
+        }
+        else {
+            print("error", log);
+        }
     }
 }
 
