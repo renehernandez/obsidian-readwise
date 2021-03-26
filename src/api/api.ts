@@ -1,43 +1,112 @@
 import type { DateTime } from "luxon";
 import { Result } from "../result";
 import Log from "../log";
-import fetch from "node-fetch";
-import { ProxyServer } from "./proxy";
-
-export enum DocumentCategory {
-    Article  = "articles",
-    Tweet = "tweets"
-}
+import type { IDocument, IHighlight } from "./raw_models";
+import { Document, Highlight } from "./models";
 
 export class ReadwiseApi {
-    private proxy: ProxyServer;
+    private token: string;
 
     constructor(token: string) {
-        this.proxy = new ProxyServer(token);
+        this.token = token;
     }
 
-    async getUpdatedDocuments(category: DocumentCategory, since: DateTime): Promise<Result<Document[], Error>> {
+    async getDocumentsWithHighlights(since: DateTime, to: DateTime): Promise<Result<Document[], Error>> {
+        const documentsResult = await this.getUpdatedDocuments(since, to);
+        if (documentsResult.isErr()) {
+            return documentsResult.intoErr();
+        }
+
+        const documents = documentsResult.unwrap();
+
+        const highlightsResult = await this.getNewHighlightsInDocuments(since, to);
+        if (highlightsResult.isErr()) {
+            return highlightsResult.intoErr();
+        }
+
+        const highlights = highlightsResult.unwrap();
+
+        documents.forEach(doc => {
+            doc.highlights = highlights.filter(high => high.book_id == doc.id);
+        });
+
+        return Result.Ok(documents);
+    }
+
+    async getUpdatedDocuments(since: DateTime, to: DateTime): Promise<Result<Document[], Error>> {
+        let url = `https://readwise.io/api/v2/books/`;
         const params = {
-            category: category,
             page_size: '1000'
         };
+
         if (since !== undefined) {
             Object.assign(params, {updated__gt: since});
         }
 
+        if (to !== undefined) {
+            Object.assign(params, {updated__lt: to});
+        }
+
+        url += "?" + new URLSearchParams(params)
+
+        Log.debug(`url: ${url}`);
+
         try {
-            const response = await this.proxy.get('books', params);
+            const response = await fetch(url, {
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${this.token}`
+                }),
+            });
 
             if (response.ok) {
-                const documents = (await response.json()) as Document[];
+                const documents = Document.Parse((await response.json()) as IDocument[]);
                 if (documents.length > 0) {
-                    Log.debug({message: "Found updated documents", context: documents});
+                    Log.debug(`Found ${documents.length} docs with new highlights`);
                 }
-                else {
-                    Log.debug("There are no documents updated");
-                }
-
                 return Result.Ok(documents);
+            }
+
+            return Result.Err(new Error(await response.text()));
+        }
+        catch (e) {
+            return Result.Err(e);
+        }
+    }
+
+    async getNewHighlightsInDocuments(since: DateTime, to: DateTime): Promise<Result<Highlight[], Error>> {
+        let url = "https://readwise.io/api/v2/highlights/";
+
+        const params = {
+            page_size: '1000'
+        };
+
+        if (since !== undefined) {
+            Object.assign(params, {updated__gt: since});
+        }
+
+        if (to !== undefined) {
+            Object.assign(params, {updated__lt: to});
+        }
+
+        url += "?" + new URLSearchParams(params)
+
+        Log.debug(`url: ${url}`);
+
+        try {
+            const response = await fetch(url, {
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${this.token}`
+                }),
+            });
+
+            if (response.ok) {
+                const highlights = Highlight.Parse((await response.json()) as IHighlight[]);
+                if (highlights.length > 0) {
+                    Log.debug(`Found ${highlights.length} new highlights`);
+                }
+                return Result.Ok(highlights);
             }
 
             return Result.Err(new Error(await response.text()));

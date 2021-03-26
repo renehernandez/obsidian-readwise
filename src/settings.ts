@@ -19,8 +19,6 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 		containerEl.createEl('h2', {text: 'Readwise Settings'});
 
         this.apiTokenSetting();
-        this.syncArticles();
-        this.syncTweets();
         this.syncOnBoot();
         this.notificationSettings();
 	}
@@ -55,30 +53,6 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             });
     }
 
-    syncArticles() {
-        new Setting(this.containerEl)
-            .setName('Sync Articles highlights')
-            .setDesc('Whether highlights from articles in Readwise should be synced')
-            .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.syncArticles)
-                .onChange(async (value) => {
-                    this.plugin.settings.syncArticles = value;
-                    await this.plugin.saveSettings();
-            }));
-    }
-
-    syncTweets() {
-        new Setting(this.containerEl)
-            .setName('Sync tweets')
-            .setDesc('Whether tweets in Readwise should be synced')
-            .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.syncTweets)
-                .onChange(async (value) => {
-                    this.plugin.settings.syncTweets = value;
-                    await this.plugin.saveSettings();
-            }));
-    }
-
     syncOnBoot() {
         new Setting(this.containerEl)
             .setName('Sync on Startup')
@@ -110,4 +84,5 @@ export class ObsidianReadwiseSettings {
 	disableNotifications: boolean = false;
     syncArticles: boolean = true;
     syncTweets: boolean = true;
+    syncBooks: boolean = true;
 }

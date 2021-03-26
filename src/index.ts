@@ -2,11 +2,12 @@ import { Notice, Plugin } from "obsidian";
 import { DateTime } from "luxon";
 import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsTab } from './settings';
 import { PluginState, StatusBar } from './status';
-import { ReadwiseApi, DocumentCategory } from './api/api';
+import { ReadwiseApi } from './api/api';
+import type { Document, Highlight } from './api/models';
 import { getTokenPath, getSecretsDirPath } from './utils';
 import ReadwiseApiTokenModal from "./modals/enterApiToken/tokenModal";
 import Log from "./log";
-import { Result } from "./result";
+import type { Result } from "./result";
 
 const fs = require("fs");
 const path = require("path");
@@ -75,11 +76,11 @@ export default class ObsidianReadwisePlugin extends Plugin {
         }
 
 		if (this.settings.syncOnBoot) {
-			await this.syncReadwise().then(filesSynced => {
+			await this.syncReadwise(this.settings.lastUpdate).then(filesSynced => {
 				this.setState(PluginState.idle);
 				let message =  filesSynced > 0
-					? `Synced new changes. ${filesSynced} files synced`
-					: `Everything up-to-date`;
+					? `Readwise: Synced new changes. ${filesSynced} files synced`
+					: `Readwise: Everything up-to-date`;
 				this.displayMessage(message);
 			});
 		}
@@ -97,29 +98,36 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-    async syncReadwise(): Promise<number> {
-        const results = await this.checkReadwise()
+    async syncReadwise(since?: DateTime, to?: DateTime): Promise<number> {
+        const documentsResults = await this.getNewHighlightsInDocuments()
+
+        if (documentsResults.isErr()) {
+            const error = documentsResults.unwrapErr();
+
+            Log.error({message: error.message, context: error});
+            this.displayError(`Unexpected error: ${error.message}`);
+            return 0;
+        }
+
+        const documents = documentsResults.unwrap();
+        this.updateNotes(documents);
 
         this.setState(PluginState.sync)
         this.settings.lastUpdate = DateTime.local();
 
         await this.saveSettings();
 
-        return results.unwrap().length
+        return documents.length;
 	}
 
-    async checkReadwise(): Promise<Result<Document[], Error>> {
+    async getNewHighlightsInDocuments(since?: DateTime, to?: DateTime): Promise<Result<Document[], Error>> {
         this.setState(PluginState.checking)
 
-        const [articles, tweets] = await Promise.all<
-            Result<Document[], Error>,
-            Result<Document[], Error>
-        >([
-            await this.api.getUpdatedDocuments(DocumentCategory.Article, this.settings.lastUpdate),
-            await this.api.getUpdatedDocuments(DocumentCategory.Tweet, this.settings.lastUpdate)
-        ]);
+        return await this.api.getDocumentsWithHighlights(since, to);
+    }
 
-        return Result.All(articles, tweets);
+    async updateNotes(documents: Document[]) {
+
     }
 
     async initializeApi(): Promise<boolean> {

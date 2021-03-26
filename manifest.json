@@ -2,9 +2,9 @@
 	"id": "obsidian-readwise",
 	"name": "Obsidian Readwise",
 	"version": "0.0.1",
-	"minAppVersion": "0.10.8",
+	"minAppVersion": "0.11.9",
 	"description": "Sync Readwise highlights into your notes",
 	"author": "Rene Hernandez",
 	"authorUrl": "https://renehernandez.io",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }
