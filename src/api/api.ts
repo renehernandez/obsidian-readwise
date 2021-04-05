@@ -28,6 +28,7 @@ export class ReadwiseApi {
 
         documents.forEach(doc => {
             doc.highlights = highlights.filter(high => high.book_id == doc.id);
+            doc.highlights.sort((a, b) => a.location - b.location);
         });
 
         return Result.Ok(documents);
@@ -49,8 +50,6 @@ export class ReadwiseApi {
 
         url += "?" + new URLSearchParams(params)
 
-        Log.debug(`url: ${url}`);
-
         try {
             const response = await fetch(url, {
                 headers: new Headers({
@@ -60,11 +59,17 @@ export class ReadwiseApi {
             });
 
             if (response.ok) {
-                const documents = Document.Parse((await response.json()) as IDocument[]);
+                const content = await response.json()
+                const documents = Document.Parse(content.results as IDocument[]);
                 if (documents.length > 0) {
                     Log.debug(`Found ${documents.length} docs with new highlights`);
                 }
+                else {
+                    Log.debug("No updated documents")
+                }
                 return Result.Ok(documents);
+            } else {
+                Log.debug(`The documents API call at ${url} failed`);
             }
 
             return Result.Err(new Error(await response.text()));
@@ -91,8 +96,6 @@ export class ReadwiseApi {
 
         url += "?" + new URLSearchParams(params)
 
-        Log.debug(`url: ${url}`);
-
         try {
             const response = await fetch(url, {
                 headers: new Headers({
@@ -102,11 +105,18 @@ export class ReadwiseApi {
             });
 
             if (response.ok) {
-                const highlights = Highlight.Parse((await response.json()) as IHighlight[]);
+                const content = await response.json()
+                const highlights = Highlight.Parse(content.results as IHighlight[]);
                 if (highlights.length > 0) {
                     Log.debug(`Found ${highlights.length} new highlights`);
                 }
+                else {
+                    Log.debug("No new highlights found")
+                }
                 return Result.Ok(highlights);
+            }
+            else {
+                Log.debug(`The highlights API call at ${url} failed`);
             }
 
             return Result.Err(new Error(await response.text()));

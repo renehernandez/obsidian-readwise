@@ -4,7 +4,7 @@ import Log from './log';
 
 export enum PluginState {
     idle,
-    sync,
+    syncing,
     checking,
 }
 
@@ -54,7 +54,7 @@ export class StatusBar {
             case PluginState.checking:
                 this.statusBarEl.setText("readwise: checking if there are new highlights to sync");
                 break;
-            case PluginState.sync:
+            case PluginState.syncing:
                 this.statusBarEl.setText("readwise: syncing new highlights");
                 break;
         }

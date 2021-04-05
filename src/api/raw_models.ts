@@ -1,13 +1,12 @@
-import type { DateTime } from "luxon";
-
 export interface IDocument {
     id: number;
     title: string;
     author: string;
     num_highlights: number;
-    updated: DateTime;
+    updated: string;
     highlights_url: string;
     source_url: string;
+    category: string;
 }
 
 export interface IHighlight {
@@ -16,4 +15,5 @@ export interface IHighlight {
     text: string;
     note: string;
     url: string;
+    location: number;
 }

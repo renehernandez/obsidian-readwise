@@ -82,7 +82,4 @@ export class ObsidianReadwiseSettings {
 	syncOnBoot: boolean = false;
     lastUpdate: DateTime;
 	disableNotifications: boolean = false;
-    syncArticles: boolean = true;
-    syncTweets: boolean = true;
-    syncBooks: boolean = true;
 }

@@ -3,11 +3,13 @@ import { DateTime } from "luxon";
 import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsTab } from './settings';
 import { PluginState, StatusBar } from './status';
 import { ReadwiseApi } from './api/api';
-import type { Document, Highlight } from './api/models';
+import type { Document } from './api/models';
 import { getTokenPath, getSecretsDirPath } from './utils';
 import ReadwiseApiTokenModal from "./modals/enterApiToken/tokenModal";
 import Log from "./log";
 import type { Result } from "./result";
+import { Template } from "./template";
+import { FileDoc } from "./fileDoc";
 
 const fs = require("fs");
 const path = require("path");
@@ -45,8 +47,8 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
 		this.addCommand({
             id: "sync",
-            name: "Sync highlights from Readwise",
-            callback: async () => this.syncReadwise(),
+            name: "Sync highlights",
+            callback: async () => this.syncReadwise(this.settings.lastUpdate),
         });
 
         try {
@@ -99,7 +101,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	}
 
     async syncReadwise(since?: DateTime, to?: DateTime): Promise<number> {
-        const documentsResults = await this.getNewHighlightsInDocuments()
+        const documentsResults = await this.getNewHighlightsInDocuments(since, to)
 
         if (documentsResults.isErr()) {
             const error = documentsResults.unwrapErr();
@@ -110,9 +112,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
         }
 
         const documents = documentsResults.unwrap();
-        this.updateNotes(documents);
 
-        this.setState(PluginState.sync)
+        await this.updateNotes(documents);
+
         this.settings.lastUpdate = DateTime.local();
 
         await this.saveSettings();
@@ -127,6 +129,14 @@ export default class ObsidianReadwisePlugin extends Plugin {
     }
 
     async updateNotes(documents: Document[]) {
+        this.setState(PluginState.syncing)
+
+        documents.forEach(doc => {
+            const template = new Template(null, this.app);
+            const fileDoc = new FileDoc(doc, template, this.app);
+
+            fileDoc.createOrUpdate();
+        });
 
     }
 
