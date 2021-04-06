@@ -48,7 +48,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		this.addCommand({
             id: "sync",
             name: "Sync highlights",
-            callback: async () => this.syncReadwise(this.settings.lastUpdate),
+            callback: async () => this.syncReadwise(this.settings.lastUpdate)
         });
 
         try {
@@ -78,13 +78,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         }
 
 		if (this.settings.syncOnBoot) {
-			await this.syncReadwise(this.settings.lastUpdate).then(filesSynced => {
-				this.setState(PluginState.idle);
-				let message =  filesSynced > 0
-					? `Readwise: Synced new changes. ${filesSynced} files synced`
-					: `Readwise: Everything up-to-date`;
-				this.displayMessage(message);
-			});
+			await this.syncReadwise(this.settings.lastUpdate);
 		}
 	}
 
@@ -100,7 +94,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-    async syncReadwise(since?: DateTime, to?: DateTime): Promise<number> {
+    async syncReadwise(since?: DateTime, to?: DateTime) {
         const documentsResults = await this.getNewHighlightsInDocuments(since, to)
 
         if (documentsResults.isErr()) {
@@ -113,13 +107,19 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
         const documents = documentsResults.unwrap();
 
-        await this.updateNotes(documents);
+        if (documents.length > 0) {
+            await this.updateNotes(documents);
+        }
 
         this.settings.lastUpdate = DateTime.local();
 
         await this.saveSettings();
 
-        return documents.length;
+        this.setState(PluginState.idle);
+        let message = documents.length > 0
+            ? `Readwise: Synced new changes. ${documents.length} files synced`
+            : `Readwise: Everything up-to-date`;
+        this.displayMessage(message);
 	}
 
     async getNewHighlightsInDocuments(since?: DateTime, to?: DateTime): Promise<Result<Document[], Error>> {
@@ -130,9 +130,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
     async updateNotes(documents: Document[]) {
         this.setState(PluginState.syncing)
+        const template = new Template(this.settings.headerTemplate, this.app);
 
         documents.forEach(doc => {
-            const template = new Template(null, this.app);
             const fileDoc = new FileDoc(doc, template, this.app);
 
             fileDoc.createOrUpdate();

@@ -26,7 +26,6 @@ export class Document {
     }
 
     static Parse(idocs: IDocument[]): Document[] {
-        Log.debug(`Number of docs: ${idocs.length}`)
         return Array.from(idocs).map(idoc => new Document(idoc));
     }
 }

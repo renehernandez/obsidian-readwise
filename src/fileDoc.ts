@@ -20,24 +20,25 @@ export class FileDoc {
     public async createOrUpdate() {
         const fileName: string = path.join(`${this.sanitizeName()}.md`);
 
-        if (!(await this.app.vault.adapter.exists(fileName))) {
-            Log.debug(`Document ${fileName} not found. Creating it`);
+        var content = '';
 
-            this.app.vault.adapter.write(fileName, await this.template.templatize(this.doc))
+        if (!(await this.app.vault.adapter.exists(fileName))) {
+            Log.debug(`Document ${fileName} not found. Will be created`);
+
+            content = await this.template.templatize(this.doc);
         }
         else {
             Log.debug(`Document ${fileName} found. Updating highlights`);
-
-            var content = await this.app.vault.adapter.read(fileName);
-
-            this.doc.highlights.forEach(hl => {
-                if (!content.contains(`%% highlight_id: ${hl.id} %%`)) {
-                    content += `\n${hl.text} %% highlight_id: ${hl.id} %%\n`
-                }
-            });
-
-            this.app.vault.adapter.write(fileName, content);
+            content = await this.app.vault.adapter.read(fileName);
         }
+
+        this.doc.highlights.forEach(hl => {
+            if (!content.contains(`%% highlight_id: ${hl.id} %%`)) {
+                content += `\n${hl.text} %% highlight_id: ${hl.id} %%\n`
+            }
+        });
+
+        this.app.vault.adapter.write(fileName, content);
     }
 
     public sanitizeName(): string {

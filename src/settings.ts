@@ -20,6 +20,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
         this.apiTokenSetting();
         this.syncOnBoot();
+        this.headerTemplate();
         this.notificationSettings();
 	}
 
@@ -65,6 +66,18 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             }));
     }
 
+    headerTemplate() {
+        new Setting(this.containerEl)
+            .setName('Custom Note Header Template')
+            .setDesc('Overrides the default Header for notes')
+            .addText(text => text
+                .setValue(this.plugin.settings.headerTemplate)
+                .onChange(async (value) => {
+                    this.plugin.settings.headerTemplate = value;
+                    await this.plugin.saveSettings();
+            }));
+    }
+
     notificationSettings() {
         new Setting(this.containerEl)
             .setName('Disable Notifications')
@@ -82,4 +95,5 @@ export class ObsidianReadwiseSettings {
 	syncOnBoot: boolean = false;
     lastUpdate: DateTime;
 	disableNotifications: boolean = false;
+    headerTemplate: string;
 }

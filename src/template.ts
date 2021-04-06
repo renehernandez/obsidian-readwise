@@ -30,9 +30,6 @@ export class Template {
 - **Tags:** #{{ category }}
 - **Date:** [[{{ updated }}]]
 ---
-{% for hl in highlights %}
-{{ hl.text }} %% highlight_id: {{ hl.id}} %%
-{% endfor %}
 `;
     }
 }

@@ -6,6 +6,7 @@ export enum PluginState {
     idle,
     syncing,
     checking,
+    done,
 }
 
 export class StatusBar {
@@ -56,6 +57,9 @@ export class StatusBar {
                 break;
             case PluginState.syncing:
                 this.statusBarEl.setText("readwise: syncing new highlights");
+                break;
+            case PluginState.done:
+                this.statusBarEl.setText("readwise: sync finished");
                 break;
         }
     }
