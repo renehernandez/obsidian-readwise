@@ -12,7 +12,7 @@ export class Document {
     public source_url: string;
     public category: string;
 
-    public highlights: Highlight[]
+    public highlights: Highlight[];
 
     constructor(raw: IDocument) {
         this.id = raw.id;
@@ -26,7 +26,7 @@ export class Document {
     }
 
     static Parse(idocs: IDocument[]): Document[] {
-        return Array.from(idocs).map(idoc => new Document(idoc));
+        return Array.from(idocs).map((idoc) => new Document(idoc));
     }
 }
 
@@ -48,6 +48,6 @@ export class Highlight {
     }
 
     static Parse(ihighs: IHighlight[]): Highlight[] {
-        return Array.from(ihighs).map(ihigh => new Highlight(ihigh));
+        return Array.from(ihighs).map((ihigh) => new Highlight(ihigh));
     }
 }
