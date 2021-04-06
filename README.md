@@ -1,6 +1,6 @@
 # Obsidian Readwise
 
-A plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
+An experimental plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
 
 ## Installation
 
