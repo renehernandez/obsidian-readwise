@@ -6,7 +6,7 @@ An experimental plugin to synchronize [Readwise](https://readwise.io) highlights
 
 ### From within Obsidian
 
-You can install this plugin from `Settings > Third Party Plugins > Readwise`.
+You can install this plugin from `Settings > Community Plugins > Readwise`.
 
 ### Manual installation
 
