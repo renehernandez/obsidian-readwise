@@ -7,7 +7,7 @@ describe("File Doc", () => {
     context("sanitizeName", () => {
         var fileDoc: FileDoc;
 
-        beforeEach(function() {
+        beforeEach(() => {
             fileDoc = new FileDoc({
                 id: 1,
                 title: "Hello_Worl'd-",
