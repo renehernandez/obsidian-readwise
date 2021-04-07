@@ -1,4 +1,3 @@
-import type { DateTime } from "luxon";
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
 
@@ -93,7 +92,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
 export class ObsidianReadwiseSettings {
 	syncOnBoot: boolean = false;
-    lastUpdate: DateTime;
+    lastUpdateTimestamp: number;
 	disableNotifications: boolean = false;
     headerTemplate: string;
 }

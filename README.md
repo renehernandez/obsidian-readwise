@@ -14,7 +14,7 @@ Download zip archive from GitHub releases page. Extract the archive into `<vault
 
 ## Usage
 
-After installation, it will ask for an [API token](https://readwise.io/access_token). This is required in order to pull the highlights from Obsidian into your vault.
+After installation, it will ask for an [API token](https://readwise.io/access_token). This is required in order to pull the highlights from Readwise into your vault.
 
 **NOTE:** The token is stored at `.obsidian/secrets/readwise_token`. I'll recommend that you exclude the `secrets` folder from any backup process (e.g: Obsidian Sync, the Obsidian Git plugin).
 
