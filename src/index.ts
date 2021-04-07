@@ -1,5 +1,6 @@
 import { Notice, Plugin } from "obsidian";
-import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsTab } from './settings';
+import { ObsidianReadwiseSettings } from './settings';
+import { ObsidianReadwiseSettingsTab } from './settingsTab';
 import { PluginState, StatusBar } from './status';
 import { ReadwiseApi } from './api/api';
 import type { Document } from './api/models';
@@ -84,7 +85,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = await this.loadData() || new ObsidianReadwiseSettings();
+        this.settings = Object.assign({}, ObsidianReadwiseSettings.defaultSettings(), await this.loadData());
 	}
 
 	async saveSettings() {
@@ -155,7 +156,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
     async initializeApiWithToken(token: string): Promise<boolean> {
         const tokenPath = getTokenPath();
 
-        await this.app.vault.adapter.write(tokenPath, token, () => true);
+        await this.app.vault.adapter.write(tokenPath, token);
 
         if (token.length == 0) {
             return false;

@@ -11,8 +11,8 @@ export class ReadwiseApi {
     }
 
     async getDocumentsWithHighlights(
-        since: number,
-        to: number
+        since?: number,
+        to?: number
     ): Promise<Result<Document[], Error>> {
         const documentsResult = await this.getUpdatedDocuments(since, to);
         if (documentsResult.isErr()) {
@@ -42,8 +42,8 @@ export class ReadwiseApi {
     }
 
     async getUpdatedDocuments(
-        since: number,
-        to: number
+        since?: number,
+        to?: number
     ): Promise<Result<Document[], Error>> {
         let url = `https://readwise.io/api/v2/books/`;
         const params = {
@@ -52,13 +52,13 @@ export class ReadwiseApi {
 
         let moment = (window as any).moment;
 
-        if (since !== undefined) {
+        if (this.isValidTimestamp(since)) {
             Object.assign(params, {
                 updated__gt: moment(since).utc().format(),
             });
         }
 
-        if (to !== undefined) {
+        if (this.isValidTimestamp(to)) {
             Object.assign(params, { updated__lt: moment(to).utc().format() });
         }
 
@@ -96,8 +96,8 @@ export class ReadwiseApi {
     }
 
     async getNewHighlightsInDocuments(
-        since: number,
-        to: number
+        since?: number,
+        to?: number
     ): Promise<Result<Highlight[], Error>> {
         let url = "https://readwise.io/api/v2/highlights/";
 
@@ -107,13 +107,13 @@ export class ReadwiseApi {
 
         let moment = (window as any).moment;
 
-        if (since !== undefined) {
+        if (this.isValidTimestamp(since)) {
             Object.assign(params, {
                 updated__gt: moment(since).utc().format(),
             });
         }
 
-        if (to !== undefined) {
+        if (this.isValidTimestamp(to)) {
             Object.assign(params, { updated__lt: moment(to).utc().formata() });
         }
 
@@ -146,5 +146,9 @@ export class ReadwiseApi {
         } catch (e) {
             return Result.Err(e);
         }
+    }
+
+    isValidTimestamp(timestamp?: number): boolean {
+        return timestamp !== undefined && timestamp > 0;
     }
 }
