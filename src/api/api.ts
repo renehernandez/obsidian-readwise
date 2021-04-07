@@ -50,10 +50,12 @@ export class ReadwiseApi {
             page_size: "1000",
         };
 
-        let moment = (window as any).moment
+        let moment = (window as any).moment;
 
         if (since !== undefined) {
-            Object.assign(params, { updated__gt: moment(since).utc().format() });
+            Object.assign(params, {
+                updated__gt: moment(since).utc().format(),
+            });
         }
 
         if (to !== undefined) {
@@ -103,10 +105,12 @@ export class ReadwiseApi {
             page_size: "1000",
         };
 
-        let moment = (window as any).moment
+        let moment = (window as any).moment;
 
         if (since !== undefined) {
-            Object.assign(params, { updated__gt: moment(since).utc().format() });
+            Object.assign(params, {
+                updated__gt: moment(since).utc().format(),
+            });
         }
 
         if (to !== undefined) {
