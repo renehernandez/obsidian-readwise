@@ -1,5 +1,4 @@
 import { Notice, Plugin } from "obsidian";
-import { DateTime } from "luxon";
 import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsTab } from './settings';
 import { PluginState, StatusBar } from './status';
 import { ReadwiseApi } from './api/api';
@@ -11,8 +10,6 @@ import type { Result } from "./result";
 import { Template } from "./template";
 import { FileDoc } from "./fileDoc";
 
-const fs = require("fs");
-const path = require("path");
 
 export default class ObsidianReadwisePlugin extends Plugin {
 	public settings: ObsidianReadwiseSettings;
@@ -48,7 +45,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		this.addCommand({
             id: "sync",
             name: "Sync highlights",
-            callback: async () => this.syncReadwise(this.settings.lastUpdate)
+            callback: async () => this.syncReadwise(this.settings.lastUpdateTimestamp)
         });
 
         try {
@@ -78,7 +75,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         }
 
 		if (this.settings.syncOnBoot) {
-			await this.syncReadwise(this.settings.lastUpdate);
+			await this.syncReadwise(this.settings.lastUpdateTimestamp);
 		}
 	}
 
@@ -94,7 +91,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-    async syncReadwise(since?: DateTime, to?: DateTime) {
+    async syncReadwise(since?: number, to?: number) {
         const documentsResults = await this.getNewHighlightsInDocuments(since, to)
 
         if (documentsResults.isErr()) {
@@ -111,7 +108,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             await this.updateNotes(documents);
         }
 
-        this.settings.lastUpdate = DateTime.local();
+        this.settings.lastUpdateTimestamp = Date.now();
 
         await this.saveSettings();
 
@@ -122,7 +119,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         this.displayMessage(message);
 	}
 
-    async getNewHighlightsInDocuments(since?: DateTime, to?: DateTime): Promise<Result<Document[], Error>> {
+    async getNewHighlightsInDocuments(since?: number, to?: number): Promise<Result<Document[], Error>> {
         this.setState(PluginState.checking)
 
         return await this.api.getDocumentsWithHighlights(since, to);

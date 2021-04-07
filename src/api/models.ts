@@ -1,5 +1,3 @@
-import Log from "src/log";
-import { DateTime } from "luxon";
 import type { IDocument, IHighlight } from "./raw_models";
 
 export class Document {
@@ -19,7 +17,7 @@ export class Document {
         this.title = raw.title;
         this.author = raw.author;
         this.num_highlights = raw.num_highlights;
-        this.updated = DateTime.fromISO(raw.updated).toISODate();
+        this.updated = (window as any).moment(raw.updated).format("YYYY-MM-DD");
         this.highlights_url = raw.highlights_url;
         this.source_url = raw.source_url;
         this.category = raw.category;

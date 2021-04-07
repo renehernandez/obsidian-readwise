@@ -1,4 +1,3 @@
-import type { DateTime } from "luxon";
 import { Result } from "../result";
 import Log from "../log";
 import type { IDocument, IHighlight } from "./raw_models";
@@ -12,8 +11,8 @@ export class ReadwiseApi {
     }
 
     async getDocumentsWithHighlights(
-        since: DateTime,
-        to: DateTime
+        since: number,
+        to: number
     ): Promise<Result<Document[], Error>> {
         const documentsResult = await this.getUpdatedDocuments(since, to);
         if (documentsResult.isErr()) {
@@ -43,20 +42,24 @@ export class ReadwiseApi {
     }
 
     async getUpdatedDocuments(
-        since: DateTime,
-        to: DateTime
+        since: number,
+        to: number
     ): Promise<Result<Document[], Error>> {
         let url = `https://readwise.io/api/v2/books/`;
         const params = {
             page_size: "1000",
         };
 
+        let moment = (window as any).moment;
+
         if (since !== undefined) {
-            Object.assign(params, { updated__gt: since });
+            Object.assign(params, {
+                updated__gt: moment(since).utc().format(),
+            });
         }
 
         if (to !== undefined) {
-            Object.assign(params, { updated__lt: to });
+            Object.assign(params, { updated__lt: moment(to).utc().format() });
         }
 
         url += "?" + new URLSearchParams(params);
@@ -93,8 +96,8 @@ export class ReadwiseApi {
     }
 
     async getNewHighlightsInDocuments(
-        since: DateTime,
-        to: DateTime
+        since: number,
+        to: number
     ): Promise<Result<Highlight[], Error>> {
         let url = "https://readwise.io/api/v2/highlights/";
 
@@ -102,12 +105,16 @@ export class ReadwiseApi {
             page_size: "1000",
         };
 
+        let moment = (window as any).moment;
+
         if (since !== undefined) {
-            Object.assign(params, { updated__gt: since });
+            Object.assign(params, {
+                updated__gt: moment(since).utc().format(),
+            });
         }
 
         if (to !== undefined) {
-            Object.assign(params, { updated__lt: to });
+            Object.assign(params, { updated__lt: moment(to).utc().formata() });
         }
 
         url += "?" + new URLSearchParams(params);

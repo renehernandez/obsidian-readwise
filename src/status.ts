@@ -1,6 +1,4 @@
-import type { DateTime } from 'luxon';
 import type ObsidianReadwisePlugin from '.';
-import Log from './log';
 
 export enum PluginState {
     idle,
@@ -50,7 +48,7 @@ export class StatusBar {
 
         switch (state) {
             case PluginState.idle:
-                this.displayFromNow(this.plugin.settings.lastUpdate);
+                this.displayFromNow(this.plugin.settings.lastUpdateTimestamp);
                 break;
             case PluginState.checking:
                 this.statusBarEl.setText("readwise: checking if there are new highlights to sync");
@@ -64,7 +62,7 @@ export class StatusBar {
         }
     }
 
-    private displayFromNow(timestamp: DateTime): void {
+    private displayFromNow(timestamp: number): void {
         if (timestamp) {
             let moment = (window as any).moment;
             let fromNow = moment(timestamp).fromNow();

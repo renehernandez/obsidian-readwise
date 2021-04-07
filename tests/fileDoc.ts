@@ -1,7 +1,6 @@
 import "mocha";
 import { assert } from "chai";
 import { FileDoc } from '../src/fileDoc';
-import { DateTime } from "luxon";
 import { Template } from "../src/template";
 
 describe("File Doc", () => {
@@ -16,7 +15,7 @@ describe("File Doc", () => {
                 num_highlights: 2,
                 highlights: null,
                 source_url: '',
-                updated: DateTime.local().toISODate(),
+                updated: "2021-03-18",
                 highlights_url: '',
                 category: 'article'
             },
