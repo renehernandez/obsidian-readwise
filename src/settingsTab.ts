@@ -1,13 +1,18 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
+import type { ObsidianReadwiseSettings } from "./settings";
+import type { TokenManager } from "./tokenManager";
 
 
 export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
-	private plugin: ObsidianReadwisePlugin;
+	private settings: ObsidianReadwiseSettings;
+    private tokenManager: TokenManager;
+    private plugin: ObsidianReadwisePlugin;
 
 	constructor(app: App, plugin: ObsidianReadwisePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+        this.tokenManager = plugin.tokenManager;
 	}
 
 	display(): void {
@@ -38,19 +43,12 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 		new Setting(this.containerEl)
 			.setName('Readwise API Token')
 			.setDesc(desc)
-			.addText(async (text) => {
-                try {
-                    text.setValue(await this.plugin.getApiToken())
-                }
-                catch (e) {
-                    /* Throw away read error if file does not exist. */
-                }
-
-                text.setPlaceholder('<READWISE_TOKEN>')
-				text.onChange(async (value) => {
-                    await this.plugin.initializeApiWithToken(value);
-                });
-            });
+			.addText(text => text
+                .setValue(this.tokenManager.Get())
+                .setPlaceholder('<READWISE_TOKEN>')
+				.onChange(token => {
+                    this.tokenManager.Upsert(token);
+            }));
     }
 
     syncOnBoot() {
@@ -58,7 +56,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             .setName('Sync on Startup')
             .setDesc('Automatically sync updated highlights when Obsidian starts')
             .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.syncOnBoot)
+                .setValue(this.settings.syncOnBoot)
                 .onChange(async (value) => {
                     this.plugin.settings.syncOnBoot = value;
                     await this.plugin.saveSettings();

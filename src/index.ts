@@ -4,21 +4,23 @@ import { ObsidianReadwiseSettingsTab } from './settingsTab';
 import { PluginState, StatusBar } from './status';
 import { ReadwiseApi } from './api/api';
 import type { Document } from './api/models';
-import { getTokenPath, getSecretsDirPath } from './utils';
 import ReadwiseApiTokenModal from "./modals/enterApiToken/tokenModal";
 import Log from "./log";
 import type { Result } from "./result";
 import { Template } from "./template";
 import { FileDoc } from "./fileDoc";
+import { TokenManager } from "./tokenManager";
 
 
 export default class ObsidianReadwisePlugin extends Plugin {
 	public settings: ObsidianReadwiseSettings;
+    public tokenManager: TokenManager;
 	public intervalID: number;
 
 	private state: PluginState = PluginState.idle;
 	private statusBar: StatusBar;
     private api: ReadwiseApi;
+
 
     setState(state: PluginState) {
         this.state = state;
@@ -32,7 +34,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	async onload() {
         let statusBarEl = this.addStatusBarItem();
         this.statusBar = new StatusBar(statusBarEl, this);
-        this.api = null
+        this.tokenManager = new TokenManager();
 
         await this.loadSettings();
 
@@ -46,32 +48,14 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		this.addCommand({
             id: "sync",
             name: "Sync highlights",
-            callback: async () => this.syncReadwise(this.settings.lastUpdateTimestamp)
-        });
-
-        try {
-            await this.createSecretsDirIfNotPresent();
-            const apiInitialized = await this.initializeApi();
-
-            if (!apiInitialized) {
-                Log.debug("Starting Modal to ask for token")
-                const tokenModal = new ReadwiseApiTokenModal(this.app);
-                await tokenModal.waitForClose;
-                const token = tokenModal.token;
-
-                if (token.length == 0) {
-                    alert(
-                        "Provided token was empty, please configure it in the settings to sync with Readwise"
-                    );
+            callback: async () => {
+                if (!(await this.initializeApi())) {
                     return;
                 }
+                await this.syncReadwise(this.settings.lastUpdateTimestamp);
+        }});
 
-                await this.initializeApiWithToken(token)
-            }
-        } catch (e) {
-            Log.error({message: e.message, context: e});
-            this.displayError(`Unexpected error: ${e.message}`);
-
+        if (!(await this.initializeApi())) {
             return;
         }
 
@@ -139,46 +123,25 @@ export default class ObsidianReadwisePlugin extends Plugin {
     }
 
     async initializeApi(): Promise<boolean> {
-        try {
-            const token = await this.getApiToken();
-            if (token.length == 0) {
-                return false
-            }
-            this.api = new ReadwiseApi(token);
-            return true;
-        }
-        catch (e) {
-            Log.error({message: e.message, context: e})
-            return false;
-        }
-    }
-
-    async initializeApiWithToken(token: string): Promise<boolean> {
-        const tokenPath = getTokenPath();
-
-        await this.app.vault.adapter.write(tokenPath, token);
+        var token = this.tokenManager.Get()
 
         if (token.length == 0) {
-            return false;
+            Log.debug("Starting Modal to ask for token")
+            const tokenModal = new ReadwiseApiTokenModal(this.app, this.tokenManager);
+            await tokenModal.waitForClose;
+
+            token = this.tokenManager.Get();
+
+            if (token.length == 0) {
+                alert(
+                    "Token was empty or was not provided, please configure it in the settings to sync with Readwise"
+                );
+                return false;
+            }
         }
 
         this.api = new ReadwiseApi(token);
         return true
-    }
-
-    async getApiToken(): Promise<string> {
-        const tokenPath = getTokenPath();
-
-        return await this.app.vault.adapter.read(tokenPath)
-    }
-
-    async createSecretsDirIfNotPresent() {
-        const secretsDir = getSecretsDirPath();
-
-        if (!(await this.app.vault.adapter.exists(secretsDir))) {
-            Log.debug("Creating secrets dir")
-            await this.app.vault.adapter.mkdir(secretsDir);
-        }
     }
 
 	//#region displaying / formatting messages
