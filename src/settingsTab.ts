@@ -56,7 +56,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             .setName('Sync on Startup')
             .setDesc('Automatically sync updated highlights when Obsidian starts')
             .addToggle(toggle => toggle
-                .setValue(this.settings.syncOnBoot)
+                .setValue(this.plugin.settings.syncOnBoot)
                 .onChange(async (value) => {
                     this.plugin.settings.syncOnBoot = value;
                     await this.plugin.saveSettings();
