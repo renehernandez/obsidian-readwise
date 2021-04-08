@@ -1,16 +1,17 @@
 import { App, Modal } from "obsidian";
+import type { TokenManager } from "src/tokenManager";
 import EnterApiTokenModalContent from "./enterApiTokenModalContent.svelte";
 
 export default class ReadwiseApiTokenModal extends Modal {
-    public token: string;
     public waitForClose: Promise<void>;
     private resolvePromise: () => void;
     private modalContent: EnterApiTokenModalContent;
+    private tokenManager: TokenManager;
 
-    constructor(app: App) {
+    constructor(app: App, tokenManager: TokenManager) {
         super(app);
 
-        this.token = "";
+        this.tokenManager = tokenManager;
         this.waitForClose = new Promise(
             (resolve) => (this.resolvePromise = resolve)
         );
@@ -21,7 +22,7 @@ export default class ReadwiseApiTokenModal extends Modal {
             target: this.contentEl,
             props: {
                 onSubmit: (value: string) => {
-                    this.token = value;
+                    this.tokenManager.Upsert(value);
                     this.close();
                 },
             },
