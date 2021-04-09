@@ -1,15 +1,19 @@
 export class ObsidianReadwiseSettings {
 	syncOnBoot: boolean = false;
-    lastUpdateTimestamp: number;
+    lastUpdate: number;
 	disableNotifications: boolean = false;
     headerTemplate: string;
+
+    static withData(data: any): ObsidianReadwiseSettings {
+        return Object.assign({}, ObsidianReadwiseSettings.defaultSettings(), data);
+    }
 
     static defaultSettings(): ObsidianReadwiseSettings {
         return {
             syncOnBoot: false,
             disableNotifications: false,
             headerTemplate: "",
-            lastUpdateTimestamp: 0
+            lastUpdate: Date.now()
         }
     }
 }

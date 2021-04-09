@@ -48,7 +48,7 @@ export class StatusBar {
 
         switch (state) {
             case PluginState.idle:
-                this.displayFromNow(this.plugin.settings.lastUpdateTimestamp);
+                this.displayFromNow(this.plugin.settings.lastUpdate);
                 break;
             case PluginState.checking:
                 this.statusBarEl.setText("readwise: checking if there are new highlights to sync");

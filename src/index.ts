@@ -52,7 +52,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
                 if (!(await this.initializeApi())) {
                     return;
                 }
-                await this.syncReadwise(this.settings.lastUpdateTimestamp);
+                await this.syncReadwise(this.settings.lastUpdate);
         }});
 
         if (!(await this.initializeApi())) {
@@ -60,7 +60,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         }
 
 		if (this.settings.syncOnBoot) {
-			await this.syncReadwise(this.settings.lastUpdateTimestamp);
+			await this.syncReadwise(this.settings.lastUpdate);
 		}
 	}
 
@@ -69,7 +69,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-        this.settings = Object.assign({}, ObsidianReadwiseSettings.defaultSettings(), await this.loadData());
+        this.settings = ObsidianReadwiseSettings.withData(await this.loadData());
 	}
 
 	async saveSettings() {
@@ -93,7 +93,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             await this.updateNotes(documents);
         }
 
-        this.settings.lastUpdateTimestamp = Date.now();
+        this.settings.lastUpdate = Date.now();
 
         await this.saveSettings();
 
