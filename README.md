@@ -2,6 +2,20 @@
 
 An experimental plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
 
+## How the sync process work
+
+The plugin will sync from Readwise only the new highlights since it was last time executed (or since it was installed). The process works as follows:
+
+1. Check if there is a file with the same name.
+   1. If not, it creates a new file using the template from `Custom Note Header Template` or the default template
+2. Read the content of the note, and add the highlights if they are not found. The search for highlight is based on the `highlight_id` from Readwise and not the text of the highlight. The exact match the plugin looks for is of the form `%% highlight_id: <highlight_id> %%`
+
+### Limitations
+
+* It can only pull the most recent 1000 highlights from Readwise (should be solved eventually as part of the implementation for this issue: [issues/7](https://github.com/renehernandez/obsidian-readwise/issues/7)
+* It doesn't handle the note associated with a highlight [issues/14](https://github.com/renehernandez/obsidian-readwise/issues/14)
+* Customization of how each highlight is stored in the note through another template option [issues/15](https://github.com/renehernandez/obsidian-readwise/issues/15)
+
 ## Installation
 
 ### From within Obsidian
