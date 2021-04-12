@@ -41,12 +41,19 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 		new Setting(this.containerEl)
 			.setName('Readwise API Token')
 			.setDesc(desc)
-			.addText(text => text
-                .setValue(this.tokenManager.Get())
+			.addText(text => {
+                let [found, token] = this.tokenManager.TryGet();
+
+                if (found) {
+                    text.setValue(token);
+                }
+
+                text
                 .setPlaceholder('<READWISE_TOKEN>')
 				.onChange(token => {
                     this.tokenManager.Upsert(token);
-            }));
+                });
+        });
     }
 
     syncOnBoot() {

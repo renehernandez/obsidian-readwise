@@ -123,16 +123,16 @@ export default class ObsidianReadwisePlugin extends Plugin {
     }
 
     async initializeApi(): Promise<boolean> {
-        var token = this.tokenManager.Get()
+        let [found, token] = this.tokenManager.TryGet()
 
-        if (token.length == 0) {
+        if (!found) {
             Log.debug("Starting Modal to ask for token")
             const tokenModal = new ReadwiseApiTokenModal(this.app, this.tokenManager);
             await tokenModal.waitForClose;
 
-            token = this.tokenManager.Get();
+            [found, token] = this.tokenManager.TryGet();
 
-            if (token.length == 0) {
+            if (!found) {
                 alert(
                     "Token was empty or was not provided, please configure it in the settings to sync with Readwise"
                 );

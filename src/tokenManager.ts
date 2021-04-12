@@ -2,8 +2,18 @@ export class TokenManager {
 
     localStorage: any;
 
-    constructor() {
-        this.localStorage = (window as any).localStorage;
+    constructor(localStorage?: any) {
+        this.localStorage = localStorage || window.localStorage;
+    }
+
+    TryGet(): [boolean, string] {
+        const token = this.Get();
+
+        if (token === null || token.length == 0) {
+            return [false, null];
+        }
+
+        return [true, token];
     }
 
     Get(): string {
