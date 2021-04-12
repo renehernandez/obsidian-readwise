@@ -1,11 +1,9 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
-import type { ObsidianReadwiseSettings } from "./settings";
 import type { TokenManager } from "./tokenManager";
 
 
 export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
-	private settings: ObsidianReadwiseSettings;
     private tokenManager: TokenManager;
     private plugin: ObsidianReadwisePlugin;
 
