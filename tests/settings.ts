@@ -1,6 +1,6 @@
 import "mocha";
 import { assert } from "chai";
-import { ObsidianReadwiseSettings } from '../src/settings';
+import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsGenerator } from '../src/settings';
 import { before } from "mocha";
 
 describe("Settings", () => {
@@ -8,7 +8,7 @@ describe("Settings", () => {
         var settings: ObsidianReadwiseSettings;
 
         before(() => {
-            settings = ObsidianReadwiseSettings.defaultSettings();
+            settings = ObsidianReadwiseSettingsGenerator.defaultSettings();
         });
 
         it('sets the lastUpdate to now timestamp', () => {
@@ -32,7 +32,7 @@ describe("Settings", () => {
     context("withData", () => {
         var settings: ObsidianReadwiseSettings;
         before(() => {
-            settings = ObsidianReadwiseSettings.withData({
+            settings = ObsidianReadwiseSettingsGenerator.withData({
                 lastUpdate: 10,
                 syncOnBoot: true,
                 headerTemplate: 'Hello World',

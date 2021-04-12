@@ -1,5 +1,5 @@
 import { Notice, Plugin } from "obsidian";
-import { ObsidianReadwiseSettings } from './settings';
+import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsGenerator } from './settings';
 import { ObsidianReadwiseSettingsTab } from './settingsTab';
 import { PluginState, StatusBar } from './status';
 import { ReadwiseApi } from './api/api';
@@ -69,7 +69,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-        this.settings = ObsidianReadwiseSettings.withData(await this.loadData());
+        this.settings = ObsidianReadwiseSettingsGenerator.withData(await this.loadData());
 	}
 
 	async saveSettings() {
