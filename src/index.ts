@@ -10,6 +10,7 @@ import type { Result } from "./result";
 import { Template } from "./template";
 import { FileDoc } from "./fileDoc";
 import { TokenManager } from "./tokenManager";
+import { FileSystemHandler } from "./fileSystem";
 
 
 export default class ObsidianReadwisePlugin extends Plugin {
@@ -112,11 +113,11 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
     async updateNotes(documents: Document[]) {
         this.setState(PluginState.syncing)
-        const adapter = this.app.vault.adapter as FileSystemAdapter
-        const template = new Template(this.settings.headerTemplate, adapter);
+        const handler = new FileSystemHandler(this.app.vault.adapter as FileSystemAdapter);
+        const template = new Template(this.settings.headerTemplate, handler);
 
         documents.forEach(doc => {
-            const fileDoc = new FileDoc(doc, template, adapter);
+            const fileDoc = new FileDoc(doc, template, handler);
 
             fileDoc.createOrUpdate();
         });

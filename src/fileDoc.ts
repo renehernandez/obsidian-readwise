@@ -1,18 +1,18 @@
 import type { Document } from './api/models';
 import type { Template } from './template';
 import Log from "./log";
-import { FileSystemAdapter, normalizePath } from "obsidian";
+import type { IFileSystemHandler } from './fileSystem';
 
 export class FileDoc {
 
     doc: Document;
-    fsAdapter: FileSystemAdapter;
     template: Template
+    fsHandler: IFileSystemHandler
 
-    constructor(doc: Document, template: Template, fsAdapter: FileSystemAdapter) {
+    constructor(doc: Document, template: Template, handler: IFileSystemHandler) {
         this.doc = doc;
         this.template = template;
-        this.fsAdapter = fsAdapter;
+        this.fsHandler = handler;
     }
 
     public async createOrUpdate() {
@@ -20,27 +20,27 @@ export class FileDoc {
 
         var content = '';
 
-        if (!(await this.fsAdapter.exists(file))) {
+        if (!(await this.fsHandler.exists(file))) {
             Log.debug(`Document ${file} not found. Will be created`);
 
             content = await this.template.templatize(this.doc);
         }
         else {
             Log.debug(`Document ${file} found. Updating highlights`);
-            content = await this.fsAdapter.read(file);
+            content = await this.fsHandler.read(file);
         }
 
         this.doc.highlights.forEach(hl => {
-            if (!content.contains(`%% highlight_id: ${hl.id} %%`)) {
+            if (!content.includes(`%% highlight_id: ${hl.id} %%`)) {
                 content += `\n${hl.text} %% highlight_id: ${hl.id} %%\n`
             }
         });
 
-        this.fsAdapter.write(file, content);
+        await this.fsHandler.write(file, content);
     }
 
     public filePath(): string {
-        return normalizePath(`${this.fsAdapter.getBasePath()}/${this.sanitizeName()}.md`);
+        return this.fsHandler.normalizePath(`${this.fsHandler.getBasePath()}/${this.sanitizeName()}.md`);
     }
 
     public sanitizeName(): string {
