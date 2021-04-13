@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { Notice, Plugin, FileSystemAdapter } from "obsidian";
 import { ObsidianReadwiseSettings, ObsidianReadwiseSettingsGenerator } from './settings';
 import { ObsidianReadwiseSettingsTab } from './settingsTab';
 import { PluginState, StatusBar } from './status';
@@ -112,10 +112,11 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
     async updateNotes(documents: Document[]) {
         this.setState(PluginState.syncing)
-        const template = new Template(this.settings.headerTemplate, this.app);
+        const adapter = this.app.vault.adapter as FileSystemAdapter
+        const template = new Template(this.settings.headerTemplate, adapter);
 
         documents.forEach(doc => {
-            const fileDoc = new FileDoc(doc, template, this.app);
+            const fileDoc = new FileDoc(doc, template, adapter);
 
             fileDoc.createOrUpdate();
         });

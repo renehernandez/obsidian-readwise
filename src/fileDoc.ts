@@ -1,35 +1,33 @@
 import type { Document } from './api/models';
 import type { Template } from './template';
 import Log from "./log";
-import type { App } from "obsidian";
-
-const path = require("path");
+import { FileSystemAdapter, normalizePath } from "obsidian";
 
 export class FileDoc {
 
     doc: Document;
-    app: App;
+    fsAdapter: FileSystemAdapter;
     template: Template
 
-    constructor(doc: Document, template: Template, app: App) {
+    constructor(doc: Document, template: Template, fsAdapter: FileSystemAdapter) {
         this.doc = doc;
         this.template = template;
-        this.app = app;
+        this.fsAdapter = fsAdapter;
     }
 
     public async createOrUpdate() {
-        const fileName: string = path.join(`${this.sanitizeName()}.md`);
+        const file = this.filePath();
 
         var content = '';
 
-        if (!(await this.app.vault.adapter.exists(fileName))) {
-            Log.debug(`Document ${fileName} not found. Will be created`);
+        if (!(await this.fsAdapter.exists(file))) {
+            Log.debug(`Document ${file} not found. Will be created`);
 
             content = await this.template.templatize(this.doc);
         }
         else {
-            Log.debug(`Document ${fileName} found. Updating highlights`);
-            content = await this.app.vault.adapter.read(fileName);
+            Log.debug(`Document ${file} found. Updating highlights`);
+            content = await this.fsAdapter.read(file);
         }
 
         this.doc.highlights.forEach(hl => {
@@ -38,7 +36,11 @@ export class FileDoc {
             }
         });
 
-        this.app.vault.adapter.write(fileName, content);
+        this.fsAdapter.write(file, content);
+    }
+
+    public filePath(): string {
+        return normalizePath(`${this.fsAdapter.getBasePath()}/${this.sanitizeName()}.md`);
     }
 
     public sanitizeName(): string {
