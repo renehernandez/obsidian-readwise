@@ -1,16 +1,16 @@
 import type { Document } from "./api/models";
 import nunjucks from "nunjucks";
-import type { App } from "obsidian";
 import Log from "./log";
+import type { IFileSystemHandler } from "./fileSystem";
 
 export class Template {
 
     templatePath: string
-    app: App
+    fsHandler: IFileSystemHandler
 
-    constructor(templatePath: string, app: App) {
+    constructor(templatePath: string, handler: IFileSystemHandler) {
         this.templatePath = templatePath;
-        this.app = app;
+        this.fsHandler = handler;
     }
 
     public async templatize(doc: Document): Promise<string> {
@@ -20,7 +20,7 @@ export class Template {
                 this.templatePath += '.md'
             }
             Log.debug(`Loading template from ${this.templatePath}`)
-            template = await this.app.vault.adapter.read(this.templatePath);
+            template = await this.fsHandler.read(this.templatePath);
         }
 
         Log.debug("Evaluating template with doc")
