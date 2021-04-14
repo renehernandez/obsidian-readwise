@@ -1,3 +1,4 @@
+import type { IDateFactory } from "src/date";
 import type { IDocument, IHighlight } from "./raw_models";
 
 export class Document {
@@ -12,19 +13,19 @@ export class Document {
 
     public highlights: Highlight[];
 
-    constructor(raw: IDocument) {
+    constructor(raw: IDocument, factory: IDateFactory) {
         this.id = raw.id;
         this.title = raw.title;
         this.author = raw.author;
         this.num_highlights = raw.num_highlights;
-        this.updated = (window as any).moment(raw.updated).format("YYYY-MM-DD");
+        this.updated = factory.createHandler(raw.updated).format("YYYY-MM-DD");
         this.highlights_url = raw.highlights_url;
         this.source_url = raw.source_url;
         this.category = raw.category;
     }
 
-    static Parse(idocs: IDocument[]): Document[] {
-        return Array.from(idocs).map((idoc) => new Document(idoc));
+    static Parse(idocs: IDocument[], factory: IDateFactory): Document[] {
+        return Array.from(idocs).map((idoc) => new Document(idoc, factory));
     }
 }
 

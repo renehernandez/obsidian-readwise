@@ -7,10 +7,11 @@ import type { Document } from './api/models';
 import ReadwiseApiTokenModal from "./modals/enterApiToken/tokenModal";
 import Log from "./log";
 import type { Result } from "./result";
-import { Template } from "./template";
+import { HeaderTemplateRenderer, HighlightTemplateRenderer } from "./template";
 import { FileDoc } from "./fileDoc";
 import { TokenManager } from "./tokenManager";
 import { FileSystemHandler } from "./fileSystem";
+import { DateFactory } from "./date";
 
 
 export default class ObsidianReadwisePlugin extends Plugin {
@@ -34,7 +35,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
 	async onload() {
         let statusBarEl = this.addStatusBarItem();
-        this.statusBar = new StatusBar(statusBarEl, this);
+        this.statusBar = new StatusBar(statusBarEl, this, new DateFactory());
         this.tokenManager = new TokenManager();
 
         await this.loadSettings();
@@ -114,10 +115,11 @@ export default class ObsidianReadwisePlugin extends Plugin {
     async updateNotes(documents: Document[]) {
         this.setState(PluginState.syncing)
         const handler = new FileSystemHandler(this.app.vault.adapter as FileSystemAdapter);
-        const template = new Template(this.settings.headerTemplate, handler);
+        const header = await HeaderTemplateRenderer.create(this.settings.headerTemplatePath, handler);
+        const highlight = await HighlightTemplateRenderer.create(this.settings.highlightTemplatePath, handler);
 
         documents.forEach(doc => {
-            const fileDoc = new FileDoc(doc, template, handler);
+            const fileDoc = new FileDoc(doc, header, highlight, handler);
 
             fileDoc.createOrUpdate();
         });
@@ -142,7 +144,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             }
         }
 
-        this.api = new ReadwiseApi(token);
+        this.api = new ReadwiseApi(token, new DateFactory());
         return true
     }
 

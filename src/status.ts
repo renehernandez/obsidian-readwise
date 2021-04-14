@@ -1,4 +1,5 @@
 import type ObsidianReadwisePlugin from '.';
+import type { IDateFactory } from './date';
 
 export enum PluginState {
     idle,
@@ -13,10 +14,12 @@ export class StatusBar {
     private lastMessageTimestamp: number;
     private statusBarEl: HTMLElement;
     private plugin: ObsidianReadwisePlugin;
+    private dateFactory: IDateFactory;
 
-	constructor(statusBarEl: HTMLElement, plugin: ObsidianReadwisePlugin) {
+	constructor(statusBarEl: HTMLElement, plugin: ObsidianReadwisePlugin, factory: IDateFactory) {
         this.statusBarEl = statusBarEl;
         this.plugin = plugin;
+        this.dateFactory = factory;
     }
 
     displayMessage(message: string, timeout: number) {
@@ -64,8 +67,7 @@ export class StatusBar {
 
     private displayFromNow(timestamp: number): void {
         if (timestamp) {
-            let moment = (window as any).moment;
-            let fromNow = moment(timestamp).fromNow();
+            let fromNow = this.dateFactory.createHandler(timestamp).fromNow();
             this.statusBarEl.setText(`readwise: last update ${fromNow}..`);
         } else {
             this.statusBarEl.setText(`readwise: ready`);

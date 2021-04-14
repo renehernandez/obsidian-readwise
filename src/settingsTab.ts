@@ -22,7 +22,8 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
         this.apiTokenSetting();
         this.syncOnBoot();
-        this.headerTemplate();
+        this.headerTemplatePath();
+        this.highlightTemplatePath();
         this.notificationSettings();
 	}
 
@@ -68,14 +69,26 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             }));
     }
 
-    headerTemplate() {
+    headerTemplatePath() {
         new Setting(this.containerEl)
-            .setName('Custom Note Header Template Path')
-            .setDesc('Path to template note that overrides the default Header')
+            .setName('Custom Header Template Path')
+            .setDesc('Path to template note that overrides how the note header is written')
             .addText(text => text
-                .setValue(this.plugin.settings.headerTemplate)
+                .setValue(this.plugin.settings.headerTemplatePath)
                 .onChange(async (value) => {
-                    this.plugin.settings.headerTemplate = value;
+                    this.plugin.settings.headerTemplatePath = value;
+                    await this.plugin.saveSettings();
+            }));
+    }
+
+    highlightTemplatePath() {
+        new Setting(this.containerEl)
+            .setName('Custom Highlight Template Path')
+            .setDesc('Path to template note that overrides how the highlights are written')
+            .addText(text => text
+                .setValue(this.plugin.settings.highlightTemplatePath)
+                .onChange(async (value) => {
+                    this.plugin.settings.highlightTemplatePath = value;
                     await this.plugin.saveSettings();
             }));
     }

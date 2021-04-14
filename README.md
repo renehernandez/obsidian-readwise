@@ -4,7 +4,7 @@ An experimental plugin to synchronize [Readwise](https://readwise.io) highlights
 
 ## How the sync process work
 
-The plugin will sync from Readwise only the new highlights since it was last time executed (or since it was installed). The process works as follows:
+The plugin will sync from Readwise only the new highlights since the last time it was executed (or since it was installed). The process works as follows:
 
 1. Check if there is a file with the same name.
    1. If not, it creates a new file using the template from `Custom Note Header Template` or the default template
@@ -54,11 +54,14 @@ The available parameters for the templates are:
 - category
 - updated
 
+**Note:** You can find examples of custom templates under [tests/data](./tests/data) folder.
+
 ### Settings
 
 - `Readwise API Token`: Add/update your Readwise API token.
 - `Sync on startup`: If enabled, will sync highlights from Readwise when Obsidian starts
-- `Custom Note Header Template Path`: Path to override default template for Readwise notes
+- `Custom Note Header Template Path`: Path to template note that overrides how the note header is written
+- `Custom Highlight Template Path`: Path to template note that overrides how the highlights are written
 - `Disable Notifications`: Toggle for pop-up notifications
 
 ### Commands

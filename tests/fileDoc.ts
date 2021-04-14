@@ -1,22 +1,16 @@
 import "mocha";
 import { assert } from "chai";
 import { FileDoc } from '../src/fileDoc';
-import { Template } from "../src/template";
-import type { IFileSystemHandler } from "../src/fileSystem";
+import { HeaderTemplateRenderer, HighlightTemplateRenderer } from "../src/template";
+import { fileSystemHandler } from "./helpers";
 
 describe("File Doc", () => {
-    const handler: IFileSystemHandler = {
-        getBasePath: () => "/base",
-        normalizePath: (path: string) => path,
-        read: async (path: string) => "",
-        write: async (path: string) => {},
-        exists: async (path: string) => true
-    }
+    const handler = fileSystemHandler();
 
     context("sanitizeName", () => {
         var fileDoc: FileDoc;
 
-        beforeEach(() => {
+        beforeEach(async () => {
             fileDoc = new FileDoc({
                 id: 1,
                 title: "Hello_Worl'd-",
@@ -28,7 +22,8 @@ describe("File Doc", () => {
                 highlights_url: '',
                 category: 'article'
             },
-            new Template(null, handler),
+            await HeaderTemplateRenderer.create(null, handler),
+            await HighlightTemplateRenderer.create(null, handler),
             handler
             );
         });
@@ -59,7 +54,7 @@ describe("File Doc", () => {
     context('filePath', () => {
         let fileDoc: FileDoc;
 
-        beforeEach(() => {
+        beforeEach(async () => {
             fileDoc = new FileDoc({
                 id: 1,
                 title: "Hello World",
@@ -71,7 +66,8 @@ describe("File Doc", () => {
                 highlights_url: '',
                 category: 'article'
             },
-            new Template(null, handler),
+            await HeaderTemplateRenderer.create(null, handler),
+            await HighlightTemplateRenderer.create(null, handler),
             handler
             );
         });

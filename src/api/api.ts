@@ -2,12 +2,15 @@ import { Result } from "../result";
 import Log from "../log";
 import type { IDocument, IHighlight } from "./raw_models";
 import { Document, Highlight } from "./models";
+import type { IDateFactory } from "src/date";
 
 export class ReadwiseApi {
     private token: string;
+    private dateFactory: IDateFactory;
 
-    constructor(token: string) {
+    constructor(token: string, factory: IDateFactory) {
         this.token = token;
+        this.dateFactory = factory;
     }
 
     async getDocumentsWithHighlights(
@@ -50,16 +53,19 @@ export class ReadwiseApi {
             page_size: "1000",
         };
 
-        let moment = (window as any).moment;
-
         if (this.isValidTimestamp(since)) {
             Object.assign(params, {
-                updated__gt: moment(since).utc().format(),
+                updated__gt: this.dateFactory
+                    .createHandler(since)
+                    .utc()
+                    .format(),
             });
         }
 
         if (this.isValidTimestamp(to)) {
-            Object.assign(params, { updated__lt: moment(to).utc().format() });
+            Object.assign(params, {
+                updated__lt: this.dateFactory.createHandler(to).utc().format(),
+            });
         }
 
         url += "?" + new URLSearchParams(params);
@@ -75,7 +81,8 @@ export class ReadwiseApi {
             if (response.ok) {
                 const content = await response.json();
                 const documents = Document.Parse(
-                    content.results as IDocument[]
+                    content.results as IDocument[],
+                    this.dateFactory
                 );
                 if (documents.length > 0) {
                     Log.debug(
@@ -105,16 +112,19 @@ export class ReadwiseApi {
             page_size: "1000",
         };
 
-        let moment = (window as any).moment;
-
         if (this.isValidTimestamp(since)) {
             Object.assign(params, {
-                updated__gt: moment(since).utc().format(),
+                updated__gt: this.dateFactory
+                    .createHandler(since)
+                    .utc()
+                    .format(),
             });
         }
 
         if (this.isValidTimestamp(to)) {
-            Object.assign(params, { updated__lt: moment(to).utc().formata() });
+            Object.assign(params, {
+                updated__lt: this.dateFactory.createHandler(to).utc().format(),
+            });
         }
 
         url += "?" + new URLSearchParams(params);

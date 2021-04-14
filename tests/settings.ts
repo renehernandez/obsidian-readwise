@@ -24,8 +24,12 @@ describe("Settings", () => {
             assert.isFalse(settings.disableNotifications);
         });
 
-        it('headerTemplate path is empty', () => {
-            assert.isEmpty(settings.headerTemplate);
+        it('header template path is empty', () => {
+            assert.isEmpty(settings.headerTemplatePath);
+        });
+
+        it('highlight template path is empty', () => {
+            assert.isEmpty(settings.highlightTemplatePath);
         });
     });
 
@@ -35,7 +39,8 @@ describe("Settings", () => {
             settings = ObsidianReadwiseSettingsGenerator.withData({
                 lastUpdate: 10,
                 syncOnBoot: true,
-                headerTemplate: 'Hello World',
+                headerTemplatePath: 'Hello World',
+                highlightTemplatePath: 'Good Bye',
                 disableNotifications: true
             });
         });
@@ -48,8 +53,12 @@ describe("Settings", () => {
             assert.isTrue(settings.syncOnBoot);
         });
 
-        it('overrides the headerTemplate field', () => {
-            assert.equal(settings.headerTemplate, "Hello World");
+        it('overrides the headerTemplatePath field', () => {
+            assert.equal(settings.headerTemplatePath, "Hello World");
+        });
+
+        it('overrides the highlightTemplatePath field', () => {
+            assert.equal(settings.highlightTemplatePath, "Good Bye");
         });
 
         it('overrides the disableNotifications field', () => {

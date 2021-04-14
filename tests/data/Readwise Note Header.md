@@ -1,0 +1,5 @@
+- **URL:** {{ source_url }}
+- **Author:** {{ author }}
+- **Tags:** #{{ category | title }} #Inbox
+- **Date:** [[{{ updated }}]]
+---
