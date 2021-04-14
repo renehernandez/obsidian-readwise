@@ -70,8 +70,8 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
     headerTemplate() {
         new Setting(this.containerEl)
-            .setName('Custom Note Header Template')
-            .setDesc('Overrides the default Header for notes')
+            .setName('Custom Note Header Template Path')
+            .setDesc('Path to template note that overrides the default Header')
             .addText(text => text
                 .setValue(this.plugin.settings.headerTemplate)
                 .onChange(async (value) => {

@@ -58,7 +58,7 @@ The available parameters for the templates are:
 
 - `Readwise API Token`: Add/update your Readwise API token.
 - `Sync on startup`: If enabled, will sync highlights from Readwise when Obsidian starts
-- `Custom Note Header Template`: Path to override default template for Readwise notes
+- `Custom Note Header Template Path`: Path to override default template for Readwise notes
 - `Disable Notifications`: Toggle for pop-up notifications
 
 ### Commands
