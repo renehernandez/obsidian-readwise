@@ -7,7 +7,6 @@ const path = require('path');
 
 export function fileSystemHandler(): IFileSystemHandler {
     return {
-        getBasePath: () => "/base",
         normalizePath: (path: string) => path,
         read: async (path: string) => {
             return fs.readFileSync(path).toString();

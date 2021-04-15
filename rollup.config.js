@@ -4,18 +4,18 @@ import commonjs from '@rollup/plugin-commonjs';
 import svelte from "rollup-plugin-svelte";
 import autoPreprocess from "svelte-preprocess";
 import copy from "rollup-plugin-copy";
-import { env } from "process";
 
 export default {
   input: 'src/index.ts',
   output: {
     file: 'dist/main.js',
     format: 'cjs',
-    exports: 'default'
+    exports: 'default',
+    sourcemap: process.env.BUILD === "development" ? "inline" : false
   },
-  external: ['obsidian', "path"],
+  external: ['obsidian'],
   plugins: [
-    typescript({ sourceMap: env.env === "DEV" }),
+    typescript({ sourceMap: process.env.BUILD === "development" }),
     resolve({
       browser: true,
       dedupe: ["svelte"],

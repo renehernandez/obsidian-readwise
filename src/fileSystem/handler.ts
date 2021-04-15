@@ -8,10 +8,6 @@ export class FileSystemHandler implements IFileSystemHandler {
         this.adapter = adapter;
     }
 
-    public getBasePath(): string {
-        return this.adapter.getBasePath();
-    }
-
     public normalizePath(path: string): string {
         return obsidian.normalizePath(path);
     }

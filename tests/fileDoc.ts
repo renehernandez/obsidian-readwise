@@ -73,7 +73,7 @@ describe("File Doc", () => {
         });
 
         it("generates the fileDoc path", () => {
-            assert.equal(fileDoc.filePath(), "/base/Hello World.md");
+            assert.equal(fileDoc.filePath(), "Hello World.md");
         });
     });
 });
