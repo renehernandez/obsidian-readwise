@@ -1,2 +1,2 @@
-export type { IFileSystemHandler as IFileSystemHandler } from "./interface";
-export { FileSystemHandler as FileSystemHandler } from "./handler";
+export type { IFileSystemHandler } from "./interface";
+export { FileSystemHandler } from "./handler";

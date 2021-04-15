@@ -2,8 +2,8 @@ export interface ObsidianReadwiseSettings {
     syncOnBoot: boolean;
     lastUpdate: number;
 	disableNotifications: boolean;
-    headerTemplate: string;
-
+    headerTemplatePath: string;
+    highlightTemplatePath: string;
 }
 
 export class ObsidianReadwiseSettingsGenerator {
@@ -16,7 +16,8 @@ export class ObsidianReadwiseSettingsGenerator {
         return {
             syncOnBoot: false,
             disableNotifications: false,
-            headerTemplate: "",
+            headerTemplatePath: "",
+            highlightTemplatePath: "",
             lastUpdate: Date.now()
         }
     }

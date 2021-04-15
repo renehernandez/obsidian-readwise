@@ -1,17 +1,21 @@
+import type nunjucks from "nunjucks";
+
 import type { Document } from './api/models';
-import type { Template } from './template';
 import Log from "./log";
 import type { IFileSystemHandler } from './fileSystem';
+import type { HeaderTemplateRenderer, HighlightTemplateRenderer } from "./template";
 
 export class FileDoc {
 
     doc: Document;
-    template: Template
+    headerRenderer: HeaderTemplateRenderer
+    highlightRenderer: HighlightTemplateRenderer
     fsHandler: IFileSystemHandler
 
-    constructor(doc: Document, template: Template, handler: IFileSystemHandler) {
+    constructor(doc: Document, header: HeaderTemplateRenderer, highlight: HighlightTemplateRenderer, handler: IFileSystemHandler) {
         this.doc = doc;
-        this.template = template;
+        this.headerRenderer = header;
+        this.highlightRenderer = highlight;
         this.fsHandler = handler;
     }
 
@@ -23,16 +27,16 @@ export class FileDoc {
         if (!(await this.fsHandler.exists(file))) {
             Log.debug(`Document ${file} not found. Will be created`);
 
-            content = await this.template.templatize(this.doc);
+            content = await this.headerRenderer.render(this.doc);
         }
         else {
-            Log.debug(`Document ${file} found. Updating highlights`);
+            Log.debug(`Document ${file} found. Loading content and updating highlights`);
             content = await this.fsHandler.read(file);
         }
 
         this.doc.highlights.forEach(hl => {
-            if (!content.includes(`%% highlight_id: ${hl.id} %%`)) {
-                content += `\n${hl.text} %% highlight_id: ${hl.id} %%\n`
+            if (!content.includes(`highlight_id: ${hl.id}`)) {
+                content += `\n${this.highlightRenderer.render(hl)}\n`
             }
         });
 
