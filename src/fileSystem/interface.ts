@@ -1,6 +1,4 @@
 export interface IFileSystemHandler {
-    getBasePath(): string;
-
     normalizePath(path: string): string;
 
     read(path: string): Promise<string>;

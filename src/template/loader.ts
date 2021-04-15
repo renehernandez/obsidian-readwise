@@ -21,7 +21,9 @@ export class TemplateLoader {
     async load(): Promise<nunjucks.Template> {
         let content = await this.selectTemplate();
 
-        return nunjucks.compile(content);
+        let env = nunjucks.configure({ autoescape: false });
+
+        return nunjucks.compile(content, env);
     }
 
     async selectTemplate(): Promise<string> {

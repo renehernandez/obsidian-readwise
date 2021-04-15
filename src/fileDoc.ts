@@ -44,7 +44,7 @@ export class FileDoc {
     }
 
     public filePath(): string {
-        return this.fsHandler.normalizePath(`${this.fsHandler.getBasePath()}/${this.sanitizeName()}.md`);
+        return this.fsHandler.normalizePath(`${this.sanitizeName()}.md`);
     }
 
     public sanitizeName(): string {

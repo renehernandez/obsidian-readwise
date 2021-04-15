@@ -17,6 +17,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          BUILD: production
 
       - name: Test
         run: npm run test

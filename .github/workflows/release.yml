@@ -16,6 +16,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          BUILD: production
 
       - name: Create release
         id: create_release
