@@ -52,7 +52,13 @@ export class HighlightTemplateRenderer extends BaseTemplateRenderer<Highlight> {
     }
 
     render(highlight: Highlight): string {
-        return this.template.render(new TemplatedHighlight(highlight));
+        let renderedContent = this.template.render(new TemplatedHighlight(highlight));
+
+        if (!renderedContent.includes(`highlight_id: ${highlight.id}`)) {
+            renderedContent += `%% highlight_id: ${highlight.id} %%\n`
+        }
+
+        return renderedContent
     }
 
     static async create(

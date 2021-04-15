@@ -25,7 +25,7 @@ export class HighlightTemplateType implements ITemplateType {
     }
 
     defaultTemplate(): string {
-        return `{{ text }} %% id: {{ id }} %%
+        return `{{ text }} %% highlight_id: {{ id }} %%
 {%- if note %}
 Note: {{ note }}
 {%- endif %}

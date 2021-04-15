@@ -35,7 +35,7 @@ export class FileDoc {
         }
 
         this.doc.highlights.forEach(hl => {
-            if (!content.includes(`id: ${hl.id}`)) {
+            if (!content.includes(`highlight_id: ${hl.id}`)) {
                 content += `\n${this.highlightRenderer.render(hl)}\n`
             }
         });

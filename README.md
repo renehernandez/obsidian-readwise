@@ -24,7 +24,6 @@ If you don't configure the API token on installation, you can always configure i
 
 The plugin supports templating the header of a note and each individual highlight. Templates are only evaluated during note creation and when adding new highlights.
 
-
 The templating system in use is [Nunjucks](https://mozilla.github.io/nunjucks/).
 
 #### Header Template
@@ -65,6 +64,8 @@ This can be overwritten by configuring the `Custom Highlight Template Path` sett
 - `id`
 - `location`
 
+If the custom highlight template doesn't include `highlight_id: <id>`, then this will be appended at the end of the rendered content as `%% highlight_id: <id> %%` (<id> will be replaced by the actual highlight's id).
+
 **Note:** You can find examples of custom templates under [tests/data](./tests/data) folder.
 
 ### Settings
@@ -74,7 +75,6 @@ This can be overwritten by configuring the `Custom Highlight Template Path` sett
 - `Custom Header Template Path`: Path to template note that overrides how the note header is written
 - `Custom Highlight Template Path`: Path to template note that overrides how the highlights are written
 - `Disable Notifications`: Toggle for pop-up notifications
-
 
 ## Installation
 
@@ -90,15 +90,13 @@ Download zip archive from GitHub releases page. Extract the archive into `<vault
 
 The plugin will sync from Readwise only the new highlights since the last time it was executed (or since it was installed). The process works as follows:
 
-1. Check if there is a file with the same name (it checks for notes in top level of the vault only. Issue [#22](https://github.com/renehernandez/obsidian-readwise/issues/22) tracks expanding support for customization
+1. Check if there is a file with the same name (it checks for notes in top level of the vault only. Issue [#22](https://github.com/renehernandez/obsidian-readwise/issues/22) tracks expanding support for customizing the location.
    1. If not, it creates a new file using the template from `Custom Note Header Template` or the default template.
-2. Read the content of the note, and add the highlights if they are not found. The search for highlight is based on the `highlight_id` from Readwise and not the text of the highlight. The exact match the plugin looks for is of the form ` highlight_id: <highlight_id>`
+2. Read the content of the note, and add the highlights if they are not found. The search for highlight is based on the `highlight_id` from Readwise and not the text of the highlight. The exact match the plugin looks for is of the form `highlight_id: <id>` where <id> is the actual id of the current highlight being rendered.
 
 ### Limitations
 
 * It can only pull the most recent 1000 highlights from Readwise (should be solved eventually as part of the implementation for this issue: [issues/7](https://github.com/renehernandez/obsidian-readwise/issues/7)
-* It doesn't handle the note associated with a highlight [issues/14](https://github.com/renehernandez/obsidian-readwise/issues/14)
-* Customization of how each highlight is stored in the note through another template option [issues/15](https://github.com/renehernandez/obsidian-readwise/issues/15)
 
 ### Compatibility
 
