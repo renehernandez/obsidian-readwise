@@ -21,29 +21,27 @@ class LocalStorageMock {
 describe("TokenManager", () => {
     var tokenManager: TokenManager;
 
-    context('TryGet returning value', () => {
+    context('get returning value', () => {
         before(() => {
             tokenManager = new TokenManager(new LocalStorageMock(true));
         });
 
         it('it returns the stored value', () => {
-            let [found, token] = tokenManager.TryGet()
+            const token = tokenManager.get()
 
             assert.equal(token, "Hello World");
-            assert.isTrue(found);
         });
     });
 
-    context('TryGet returning nulls', () => {
+    context('get returning null', () => {
         before(() => {
             tokenManager = new TokenManager(new LocalStorageMock(false));
         });
 
         it('it returns the null', () => {
-            let [found, token] = tokenManager.TryGet()
+            const token = tokenManager.get()
 
             assert.equal(token, null);
-            assert.isFalse(found);
         });
     });
 })

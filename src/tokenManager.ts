@@ -6,21 +6,17 @@ export class TokenManager {
         this.localStorage = localStorage || window.localStorage;
     }
 
-    TryGet(): [boolean, string] {
-        const token = this.Get();
+    get(): string {
+        const token = this.localStorage.getItem('readwise_token');
 
         if (token === null || token.length == 0) {
-            return [false, null];
+            return null;
         }
 
-        return [true, token];
+        return token;
     }
 
-    Get(): string {
-        return this.localStorage.getItem('readwise_token');
-    }
-
-    Upsert(token: string) {
+    upsert(token: string) {
         this.localStorage.setItem('readwise_token', token);
     }
 }

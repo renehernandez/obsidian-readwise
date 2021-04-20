@@ -22,7 +22,7 @@ export default class ReadwiseApiTokenModal extends Modal {
             target: this.contentEl,
             props: {
                 onSubmit: (value: string) => {
-                    this.tokenManager.Upsert(value);
+                    this.tokenManager.upsert(value);
                     this.close();
                 },
             },
