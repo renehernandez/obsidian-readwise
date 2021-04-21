@@ -1,4 +1,4 @@
-# Obsidian Readwise
+# Obsidian Readwise (Community Plugin)
 
 An experimental plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
 
