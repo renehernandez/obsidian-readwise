@@ -5,9 +5,10 @@ on:
       - "*"
 
 jobs:
-  build:
+  artifacts:
     runs-on: ubuntu-latest
     steps:
+      - uses: FranzDiebold/github-env-vars-action@v2
       - name: Checkout source
         uses: actions/checkout@v2
 
@@ -19,31 +20,66 @@ jobs:
         env:
           BUILD: production
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cache release artifacts
+        uses: actions/cache@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          path: |
+            ./dist
+          key: dist-${{ env.CI_REF_NAME_SLUG }}
 
-      - name: Upload main.js
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  changelog:
+    name: Update Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: FranzDiebold/github-env-vars-action@v2
+      - uses: actions/checkout@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/main.js
-          asset_name: main.js
-          asset_content_type: application/javascript
+          ref: main
+      - uses: heinrichreimer/github-changelog-generator-action@v2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issues: true
+          issuesWoLabels: true
+          pullRequests: true
+          prWoLabels: true
+          excludeLabels: 'duplicate,question,invalid,wontfix,release'
+          addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update Changelog for ${{ env.CI_REF_NAME }}
+          file_pattern: CHANGELOG.md
 
-      - name: Upload manifest.json
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [changelog]
+    steps:
+      - uses: FranzDiebold/github-env-vars-action@v2
+      - uses: actions/checkout@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/manifest.json
-          asset_name: manifest.json
-          asset_content_type: application/json
+          ref: main
+
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v1
+        with:
+          version: ${{ env.CI_REF_NAME }}
+          path: CHANGELOG.md
+
+      - name: Load release binaries
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./dist
+          key: dist-${{ env.CI_REF_NAME_SLUG }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.CI_REF_NAME }}
+          name: ${{ env.CI_REF_NAME }}
+          body: ${{ steps.changelog_reader.outputs.log_entry }}
+          draft: false
+          prerelease: false
+          files: |
+            dist/*
