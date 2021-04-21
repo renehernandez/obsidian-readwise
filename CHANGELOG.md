@@ -7,7 +7,7 @@
 - Change plugin name to Readwise Community [\#34](https://github.com/renehernandez/obsidian-readwise/issues/34)
 - Change return type on `TryGet` [\#30](https://github.com/renehernandez/obsidian-readwise/issues/30)
 
-**Documentation:**
+**Documentation Updates:**
 
 - Add Changelog generation for releases [\#39](https://github.com/renehernandez/obsidian-readwise/pull/39)
 - README update [\#38](https://github.com/renehernandez/obsidian-readwise/pull/38)
@@ -53,7 +53,7 @@
 
 - Set initial timestamp to moment of plugin installation [\#13](https://github.com/renehernandez/obsidian-readwise/issues/13)
 
-**Documentation:**
+**Documentation Updates:**
 
 - Explain sync process in Readme [\#9](https://github.com/renehernandez/obsidian-readwise/issues/9)
 
