@@ -44,7 +44,10 @@ export class FileDoc {
     }
 
     public filePath(storagePath: string = ''): string {
-        return this.fsHandler.normalizePath(`${storagePath ? storagePath + '/' :''}${this.sanitizeName()}.md`)
+        if (storagePath.length > 0 && storagePath.slice(-1) !== '/') {
+            storagePath = storagePath + '/';
+        }
+        return this.fsHandler.normalizePath(`${storagePath}${this.sanitizeName()}.md`)
         .substring(0, 260);
     }
 
@@ -54,8 +57,7 @@ export class FileDoc {
             .replace(/(http[s]?\:\/\/)/, '')
             .replace(/\./g, '_')
             .replace(/\//g, '-')
-            .replace(/(\?.*)/, '')
-            .replace(/\|/g, '-')
+            .replace(/(\?.*)/, '') // Remove query params
             .replace(/\\/g, '-')
             .replace(/\:/g, '-')
     }

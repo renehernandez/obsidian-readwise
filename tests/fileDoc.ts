@@ -78,8 +78,17 @@ describe("File Doc", () => {
             );
         });
 
-        it("generates the fileDoc path", () => {
+        it("generates the fileDoc path if unspecified", () => {
             assert.equal(fileDoc.filePath(), "Hello World.md");
         });
+
+        it("generates a specified fileDoc path", () => {
+            assert.equal(fileDoc.filePath('foo/bar'), "foo/bar/Hello World.md");
+        });
+
+        it("Handles trailing slash in a specified fileDoc path", () => {
+            assert.equal(fileDoc.filePath('foo/bar/'), "foo/bar/Hello World.md");
+        });
+
     });
 });

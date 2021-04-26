@@ -24,8 +24,6 @@ export class ReadwiseApi {
 
         const documents = documentsResult.unwrap();
 
-        console.log(documents);
-
         const highlightsResult = await this.getNewHighlightsInDocuments(
             since,
             to
@@ -36,7 +34,6 @@ export class ReadwiseApi {
         }
 
         const highlights = highlightsResult.unwrap();
-        console.log(highlights);
 
         documents.forEach((doc) => {
             doc.highlights = highlights.filter(
