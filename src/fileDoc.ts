@@ -19,8 +19,8 @@ export class FileDoc {
         this.fsHandler = handler;
     }
 
-    public async createOrUpdate() {
-        const file = this.filePath();
+    public async createOrUpdate(storagePath: string) {
+        const file = this.filePath(storagePath);
 
         var content = '';
 
@@ -43,11 +43,20 @@ export class FileDoc {
         await this.fsHandler.write(file, content);
     }
 
-    public filePath(): string {
-        return this.fsHandler.normalizePath(`${this.sanitizeName()}.md`);
+    public filePath(storagePath: string = ''): string {
+        return this.fsHandler.normalizePath(`${storagePath ? storagePath + '/' :''}${this.sanitizeName()}.md`)
+        .substring(0, 260);
     }
 
     public sanitizeName(): string {
-        return this.doc.title.replace(/[/\\:]/, '-')
+        console.log(`Replacing ${this.doc.title}`);
+        return this.doc.title
+            .replace(/(http[s]?\:\/\/)/, '')
+            .replace(/\./g, '_')
+            .replace(/\//g, '-')
+            .replace(/(\?.*)/, '')
+            .replace(/\|/g, '-')
+            .replace(/\\/g, '-')
+            .replace(/\:/g, '-')
     }
 }

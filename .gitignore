@@ -2,11 +2,15 @@
 *.iml
 .idea
 
-# npm
+# npm / yarn
 node_modules
 package-lock.json
+yarn.lock
 
 # build
 main.js
 *.js.map
 dist/
+
+# Development
+data.json

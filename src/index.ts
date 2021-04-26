@@ -101,8 +101,8 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
         this.setState(PluginState.idle);
         let message = documents.length > 0
-            ? `Readwise: Synced new changes. ${documents.length} files synced`
-            : `Readwise: Everything up-to-date`;
+            ? `Readwise: Synced new changes. ${documents.length} files synced.`
+            : `Readwise: Everything up-to-date.`;
         this.displayMessage(message);
 	}
 
@@ -121,7 +121,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         documents.forEach(doc => {
             const fileDoc = new FileDoc(doc, header, highlight, handler);
 
-            fileDoc.createOrUpdate();
+            fileDoc.createOrUpdate(this.settings.highlightStoragePath);
         });
 
     }
