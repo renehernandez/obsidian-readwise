@@ -35,7 +35,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
 	async onload() {
         let statusBarEl = this.addStatusBarItem();
-        this.statusBar = new StatusBar(statusBarEl, this, new DateFactory());
+        if (!this.app.isMobile) {
+            this.statusBar = new StatusBar(statusBarEl, this, new DateFactory());
+        }
         this.tokenManager = new TokenManager();
 
         await this.loadSettings();
