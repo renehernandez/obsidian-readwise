@@ -2,6 +2,10 @@
 
 ## [0.0.5](https://github.com/renehernandez/obsidian-readwise/tree/0.0.5) (2021-05-03)
 
+**Fixed bugs:**
+
+- Update the cache name to account for the job id [\#46](https://github.com/renehernandez/obsidian-readwise/pull/46)
+
 ## [0.0.5-beta1](https://github.com/renehernandez/obsidian-readwise/tree/0.0.5-beta1) (2021-05-03)
 
 **Fixed bugs:**
