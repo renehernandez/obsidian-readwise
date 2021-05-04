@@ -48,7 +48,6 @@ export class FileDoc {
             storagePath = storagePath + '/';
         }
         return this.fsHandler.normalizePath(`${storagePath}${this.sanitizeName()}.md`)
-        .substring(0, 260);
     }
 
     public sanitizeName(): string {
