@@ -20,13 +20,13 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	public intervalID: number;
 
 	private state: PluginState = PluginState.idle;
-	private statusBar: StatusBar;
     private api: ReadwiseApi;
+    private mode: AppMode;
 
 
     setState(state: PluginState) {
         this.state = state;
-        this.statusBar.display();
+        this.mode.display();
     }
 
     getState(): PluginState {
@@ -34,18 +34,14 @@ export default class ObsidianReadwisePlugin extends Plugin {
     }
 
 	async onload() {
-        let statusBarEl = this.addStatusBarItem();
-        this.statusBar = new StatusBar(statusBarEl, this, new DateFactory());
         this.tokenManager = new TokenManager();
+        this.mode = this.app.isMobile ? new MobileMode(this) : new DesktopMode(this);
+        this.mode.onload();
 
         await this.loadSettings();
 
         this.setState(PluginState.idle);
         this.addSettingTab(new ObsidianReadwiseSettingsTab(this.app, this));
-
-		this.registerInterval(
-            window.setInterval(() => this.statusBar.display(), 1000)
-        );
 
 		this.addCommand({
             id: "sync",
@@ -85,7 +81,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
             const error = documentsResults.unwrapErr();
 
             Log.error({message: error.message, context: error});
-            this.displayError(`Unexpected error: ${error.message}`);
+            this.mode.displayError(`Unexpected error: ${error.message}`);
             return 0;
         }
 
@@ -101,9 +97,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
         this.setState(PluginState.idle);
         let message = documents.length > 0
-            ? `Readwise: Synced new changes. ${documents.length} files synced.`
-            : `Readwise: Everything up-to-date.`;
-        this.displayMessage(message);
+            ? `Readwise: Synced new changes. ${documents.length} files synced`
+            : `Readwise: Everything up-to-date`;
+        this.mode.displayMessage(message);
 	}
 
     async getNewHighlightsInDocuments(since?: number, to?: number): Promise<Result<Document[], Error>> {
@@ -147,24 +143,80 @@ export default class ObsidianReadwisePlugin extends Plugin {
         this.api = new ReadwiseApi(token, new DateFactory());
         return true
     }
+}
 
-	//#region displaying / formatting messages
-	displayMessage(message: string, timeout: number = 4 * 1000): void {
-		this.statusBar.displayMessage(message.toLowerCase(), timeout);
+interface AppMode {
+    onload(): void;
+    display(): void;
+    displayMessage(message: string): void;
+    displayError(message: string): void;
+}
 
-		if (!this.settings.disableNotifications) {
+class DesktopMode implements AppMode {
+    private statusBar: StatusBar;
+    private plugin: ObsidianReadwisePlugin;
+
+    constructor(plugin: ObsidianReadwisePlugin) {
+        this.plugin = plugin;
+    }
+
+    onload() {
+        this.statusBar = new StatusBar(this.plugin.addStatusBarItem(), this.plugin, new DateFactory());
+        this.plugin.registerInterval(
+            window.setInterval(() => this.statusBar.display(), 1000)
+        );
+    }
+
+    display(): void {
+        this.statusBar.display();
+    }
+
+    displayMessage(message: string): void {
+        if (!this.plugin.settings.disableNotifications) {
+			new Notice(message);
+		}
+
+		this.statusBar.displayMessage(message.toLowerCase(), 4 * 1000);
+
+		Log.debug(message);
+	}
+
+    displayError(message: string): void {
+        new Notice(message);
+
+        this.statusBar.displayMessage(message.toLowerCase(), 0);
+
+        Log.debug(message)
+    }
+}
+
+
+class MobileMode implements AppMode {
+    private plugin: ObsidianReadwisePlugin;
+
+    constructor(plugin: ObsidianReadwisePlugin) {
+        this.plugin = plugin;
+    }
+
+    onload() {
+        return;
+    }
+
+    display(): void {
+        return;
+    }
+
+    displayMessage(message: string): void {
+		if (!this.plugin.settings.disableNotifications) {
 			new Notice(message);
 		}
 
 		Log.debug(message);
 	}
 
-	displayError(message: string, timeout: number = 0): void {
+    displayError(message: string): void {
         new Notice(message);
-        this.statusBar.displayMessage(message.toLowerCase(), timeout);
 
         Log.debug(message)
     }
-
-	//#endregion
 }

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.5](https://github.com/renehernandez/obsidian-readwise/tree/0.0.5) (2021-05-03)
+
+**Fixed bugs:**
+
+- Update the cache name to account for the job id [\#46](https://github.com/renehernandez/obsidian-readwise/pull/46)
+
+## [0.0.5-beta1](https://github.com/renehernandez/obsidian-readwise/tree/0.0.5-beta1) (2021-05-03)
+
+**Fixed bugs:**
+
+- Readwise Plugin not listed in Plugin option menu [\#44](https://github.com/renehernandez/obsidian-readwise/issues/44)
+
+**Merged pull requests:**
+
+- Restrict status bar loading to desktop mode only [\#45](https://github.com/renehernandez/obsidian-readwise/pull/45)
+
 ## [0.0.4](https://github.com/renehernandez/obsidian-readwise/tree/0.0.4) (2021-04-21)
 
 **Implemented enhancements:**

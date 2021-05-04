@@ -25,7 +25,7 @@ jobs:
         with:
           path: |
             ./dist
-          key: dist-${{ env.CI_REF_NAME_SLUG }}
+          key: dist-${{ env.CI_REF_NAME_SLUG }}-${{ env.CI_RUN_NUMBER }}
 
   changelog:
     name: Update Changelog
@@ -71,7 +71,7 @@ jobs:
         with:
           path: |
             ./dist
-          key: dist-${{ env.CI_REF_NAME_SLUG }}
+          key: dist-${{ env.CI_REF_NAME_SLUG }}-${{ env.CI_RUN_NUMBER }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
