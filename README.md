@@ -45,6 +45,7 @@ This can be overwritten by configuring the `Custom Header Template Path` setting
 - `author`
 - `category`
 - `updated`
+- `num_highlights`
 
 #### Highlight Template
 
