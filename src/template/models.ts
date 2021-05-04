@@ -6,6 +6,7 @@ export class TemplatedDocument {
     public updated: string;
     public source_url: string;
     public category: string;
+    public num_highlights: number;
 
     constructor(doc: Document) {
         this.title = doc.title;
@@ -13,6 +14,7 @@ export class TemplatedDocument {
         this.updated = doc.updated;
         this.source_url = doc.source_url;
         this.category = doc.category;
+        this.num_highlights = doc.num_highlights;
     }
 }
 

@@ -1,0 +1,6 @@
+- URL:: {{ source_url }}
+- Author:: {{ author }}
+- Tags:: #{{ category | title }}
+- Date:: [[{{ updated }}]]
+- Highlights Total:: {{ num_highlights }}
+---

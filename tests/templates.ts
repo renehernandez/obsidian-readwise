@@ -103,6 +103,18 @@ describe("HeaderTemplateRenderer", () => {
 ---
 `);
         });
+
+        it('renders custom template using num_highlights', async () => {
+            customTemplateRenderer = await HeaderTemplateRenderer.create(resolvePathToData('Readwise Note Header - Num Highlights'), handler);
+
+            assert.equal(await customTemplateRenderer.render(doc), `- URL:: https://readwise.io
+- Author:: renehernandez.io
+- Tags:: #Article
+- Date:: [[2021-04-14]]
+- Highlights Total:: 5
+---
+`);
+        });
     });
 });
 
