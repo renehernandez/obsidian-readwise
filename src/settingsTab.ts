@@ -82,6 +82,23 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
             }))
     }
 
+    syncOnInterval() {
+        new Setting(this.containerEl)
+            .setName('Sync on Interval')
+            .setDesc('Sync updated highlights on interval. To disable automatic sync specify a negative value or zero (default')
+            .addText(value => {
+                if (!isNaN(Number(value))) {
+                    this.plugin.settings.autoSyncInterval = Number(value);
+                    await this.plugin.saveSettings();
+                }
+                .setValue(this.plugin.settings.autoSyncInterval)
+                .onChange(async (value) => {
+                    this.plugin.settings.syncOnBoot = value;
+                    
+            }
+        }));
+    }
+
     headerTemplatePath() {
         new Setting(this.containerEl)
             .setName('Custom Header Template Path')
