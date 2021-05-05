@@ -42,6 +42,7 @@ jobs:
           issuesWoLabels: true
           pullRequests: true
           prWoLabels: true
+          author: true
           excludeLabels: 'duplicate,question,invalid,wontfix,release'
           addSections: '{"documentation":{"prefix":"**Documentation Updates:**","labels":["documentation"]}}'
       - uses: stefanzweifel/git-auto-commit-action@v4
