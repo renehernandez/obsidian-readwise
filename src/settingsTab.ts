@@ -22,6 +22,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
         this.apiTokenSetting();
         this.syncOnBoot();
+        this.highlightStoragePath();
         this.headerTemplatePath();
         this.highlightTemplatePath();
         this.notificationSettings();
@@ -67,6 +68,18 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
                     this.plugin.settings.syncOnBoot = value;
                     await this.plugin.saveSettings();
             }));
+    }
+
+    highlightStoragePath() {
+        new Setting(this.containerEl)
+        .setName('Highlight storage path')
+        .setDesc('Path to the directory used to store the notes')
+        .addText(text => text
+            .setValue(this.plugin.settings.highlightStoragePath)
+            .onChange(async (value) => {
+                this.plugin.settings.highlightStoragePath = value;
+                await this.plugin.saveSettings();
+            }))
     }
 
     headerTemplatePath() {

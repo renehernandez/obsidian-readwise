@@ -22,9 +22,9 @@ describe("File Doc", () => {
                 highlights_url: '',
                 category: 'article'
             },
-            await HeaderTemplateRenderer.create(null, handler),
-            await HighlightTemplateRenderer.create(null, handler),
-            handler
+                await HeaderTemplateRenderer.create(null, handler),
+                await HighlightTemplateRenderer.create(null, handler),
+                handler
             );
         });
 
@@ -49,6 +49,16 @@ describe("File Doc", () => {
 
             assert.equal(fileDoc.sanitizeName(), 'Hello-World')
         });
+
+        it("Removes query params, slashes and protocol from URL (http and https)", () => {
+            fileDoc.doc.title = "https://example.com/2021-04-26/article-name-12?foo=bar&key=value";
+
+            assert.equal(fileDoc.sanitizeName(), "example_com-2021-04-26-article-name-12");
+    
+            fileDoc.doc.title = "http://example.com/2021-04-26/article-name-13?foo=bar&key=value";
+
+            assert.equal(fileDoc.sanitizeName(), "example_com-2021-04-26-article-name-13");      
+        });
     });
 
     context('filePath', () => {
@@ -72,8 +82,17 @@ describe("File Doc", () => {
             );
         });
 
-        it("generates the fileDoc path", () => {
+        it("generates the fileDoc path if unspecified", () => {
             assert.equal(fileDoc.filePath(), "Hello World.md");
         });
+
+        it("generates a specified fileDoc path", () => {
+            assert.equal(fileDoc.filePath('foo/bar'), "foo/bar/Hello World.md");
+        });
+
+        it("Handles trailing slash in a specified fileDoc path", () => {
+            assert.equal(fileDoc.filePath('foo/bar/'), "foo/bar/Hello World.md");
+        });
+
     });
 });

@@ -117,7 +117,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         documents.forEach(doc => {
             const fileDoc = new FileDoc(doc, header, highlight, handler);
 
-            fileDoc.createOrUpdate();
+            fileDoc.createOrUpdate(this.settings.highlightStoragePath);
         });
 
     }

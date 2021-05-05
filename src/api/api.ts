@@ -28,6 +28,7 @@ export class ReadwiseApi {
             since,
             to
         );
+
         if (highlightsResult.isErr()) {
             return highlightsResult.intoErr();
         }
@@ -128,6 +129,8 @@ export class ReadwiseApi {
         }
 
         url += "?" + new URLSearchParams(params);
+
+        Log.debug(`Requesting ${url}`);
 
         try {
             const response = await fetch(url, {

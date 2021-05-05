@@ -3,6 +3,7 @@ export interface ObsidianReadwiseSettings {
     lastUpdate: number;
 	disableNotifications: boolean;
     headerTemplatePath: string;
+    highlightStoragePath: string;
     highlightTemplatePath: string;
 }
 
@@ -18,6 +19,7 @@ export class ObsidianReadwiseSettingsGenerator {
             disableNotifications: false,
             headerTemplatePath: "",
             highlightTemplatePath: "",
+            highlightStoragePath: "",
             lastUpdate: Date.now()
         }
     }
