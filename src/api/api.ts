@@ -28,7 +28,7 @@ export class ReadwiseApi {
             since,
             to
         );
-  
+
         if (highlightsResult.isErr()) {
             return highlightsResult.intoErr();
         }
@@ -107,26 +107,26 @@ export class ReadwiseApi {
         since?: number,
         to?: number
     ): Promise<Result<Highlight[], Error>> {
-         let url = "https://readwise.io/api/v2/highlights/";
+        let url = "https://readwise.io/api/v2/highlights/";
 
-         const params = {
-             page_size: "1000",
-         };
+        const params = {
+            page_size: "1000",
+        };
 
-         if (this.isValidTimestamp(since)) {
-             Object.assign(params, {
-                 updated__gt: this.dateFactory
-                     .createHandler(since)
-                     .utc()
-                     .format(),
-             });
-         }
+        if (this.isValidTimestamp(since)) {
+            Object.assign(params, {
+                updated__gt: this.dateFactory
+                    .createHandler(since)
+                    .utc()
+                    .format(),
+            });
+        }
 
-         if (this.isValidTimestamp(to)) {
-             Object.assign(params, {
-                 updated__lt: this.dateFactory.createHandler(to).utc().format(),
-             });
-         }
+        if (this.isValidTimestamp(to)) {
+            Object.assign(params, {
+                updated__lt: this.dateFactory.createHandler(to).utc().format(),
+            });
+        }
 
         url += "?" + new URLSearchParams(params);
 
