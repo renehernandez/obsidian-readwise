@@ -4,7 +4,6 @@
 
 # npm / yarn
 node_modules
-package-lock.json
 yarn.lock
 
 # build
@@ -14,3 +13,4 @@ dist/
 
 # Development
 data.json
+readwise_token
