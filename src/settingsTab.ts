@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
 import type { TokenManager } from "./tokenManager";
 
@@ -86,17 +86,32 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
         new Setting(this.containerEl)
             .setName('Sync on Interval')
             .setDesc('Sync updated highlights on interval. To disable automatic sync specify a negative value or zero (default')
-            .addText(value => {
-                if (!isNaN(Number(value))) {
-                    this.plugin.settings.autoSyncInterval = Number(value);
-                    await this.plugin.saveSettings();
-                }
-                .setValue(this.plugin.settings.autoSyncInterval)
-                .onChange(async (value) => {
-                    this.plugin.settings.syncOnBoot = value;
-                    
-            }
-        }));
+            .addText(text => text
+                .setValue(String(this.plugin.settings.autoSyncInterval))
+                .onChange(async value => {
+                    if (!isNaN(Number(value))) {
+                        this.plugin.settings.autoSyncInterval = Number(value);
+                        await this.plugin.saveSettings();
+
+                        if (this.plugin.settings.autoSyncInterval > 0) {
+                            this.plugin.clearAutoSync();
+                            this.plugin.startAutoSync(this.plugin.settings.autoSyncInterval);
+                            new Notice(
+                                `Automatic sync enabled! Every ${this.plugin.settings.autoSyncInterval} hours.`
+                            )
+                        }
+                        else if (this.plugin.settings.autoSyncInterval <= 0 && this.plugin.timeoutIdSync) {
+                            this.plugin.clearAutoSync();
+                            new Notice(
+                                "Automatic sync disabled!"
+                            )
+                        }
+                    }
+                    else {
+                        new Notice("Please specify a valid number.")
+                    }
+                })
+        );
     }
 
     headerTemplatePath() {

@@ -12,16 +12,18 @@ import { FileDoc } from "./fileDoc";
 import { TokenManager } from "./tokenManager";
 import { FileSystemHandler } from "./fileSystem";
 import { DateFactory } from "./date";
+import PromiseQueue from "./promiseQueue";
 
 
 export default class ObsidianReadwisePlugin extends Plugin {
 	public settings: ObsidianReadwiseSettings;
     public tokenManager: TokenManager;
-	public intervalID: number;
+	public timeoutIdSync: number;
 
 	private state: PluginState = PluginState.idle;
     private api: ReadwiseApi;
     private mode: AppMode;
+    private promiseQueue: PromiseQueue;
 
 
     setState(state: PluginState) {
@@ -37,6 +39,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
         this.tokenManager = new TokenManager();
         this.mode = this.app.isMobile ? new MobileMode(this) : new DesktopMode(this);
         this.mode.onload();
+        this.promiseQueue = new PromiseQueue();
 
         await this.loadSettings();
 
@@ -46,20 +49,19 @@ export default class ObsidianReadwisePlugin extends Plugin {
 		this.addCommand({
             id: "sync",
             name: "Sync highlights",
-            callback: async () => {
-                if (!(await this.initializeApi())) {
-                    return;
-                }
-                await this.syncReadwise(this.settings.lastUpdate);
-        }});
-
-        if (!(await this.initializeApi())) {
-            return;
-        }
+            callback: () => this.promiseQueue.addTask(() => this.syncReadwise(this.settings.lastUpdate)),
+        });
 
 		if (this.settings.syncOnBoot) {
 			await this.syncReadwise(this.settings.lastUpdate);
 		}
+
+        if (this.settings.autoSyncInterval > 0) {
+            const now = new Date();
+            const diff = this.settings.autoSyncInterval - (Math.round(((now.getTime() - this.settings.lastUpdate) / 1000) / 3600 ));
+
+            this.startAutoSync(diff <= 0 ? 0 : diff);
+        }
 	}
 
 	async onunload() {
@@ -75,6 +77,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
 	}
 
     async syncReadwise(since?: number, to?: number) {
+        if (!(await this.initializeApi())) {
+            return;
+        }
         const documentsResults = await this.getNewHighlightsInDocuments(since, to)
 
         if (documentsResults.isErr()) {
@@ -142,6 +147,24 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
         this.api = new ReadwiseApi(token, new DateFactory());
         return true
+    }
+
+    startAutoSync(hours?: number) {
+        this.timeoutIdSync = window.setTimeout(
+            () => {
+                this.promiseQueue.addTask(() => this.syncReadwise(this.settings.lastUpdate));
+                this.startAutoSync();
+            },
+            (hours ?? this.settings.autoSyncInterval) * 3_600_000
+        );
+    }
+
+    clearAutoSync(): boolean {
+        if (this.timeoutIdSync) {
+            window.clearTimeout(this.timeoutIdSync);
+            return true;
+        }
+        return false;
     }
 }
 
