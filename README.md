@@ -1,6 +1,6 @@
 # Obsidian Readwise (Community Plugin)
 
-An experimental plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
+**Obsidian Readwise (Community Plugin)** is an unofficial plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
 
 ## Features at glance
 
@@ -77,13 +77,24 @@ If the custom highlight template doesn't include `highlight_id: <id>`, then this
 - `Custom Highlight Template Path`: Path to template note that overrides how the highlights are written
 - `Disable Notifications`: Toggle for pop-up notifications
 
-# How the sync process work
+## How the sync process work
 
 The plugin will sync from Readwise only the new highlights since the last time it was executed (or since it was installed). The process works as follows:
 
 1. Check if there is a file with the same name (it checks for notes in top level of the vault only. Issue [#22](https://github.com/renehernandez/obsidian-readwise/issues/22) tracks expanding support for customizing the location.
    1. If not, it creates a new file using the template from `Custom Note Header Template` or the default template.
 2. Read the content of the note, and add the highlights if they are not found. The search for highlight is based on the `highlight_id` from Readwise and not the text of the highlight. The exact match the plugin looks for is of the form `highlight_id: <id>` where <id> is the actual id of the current highlight being rendered.
+
+### Alternatives
+
+In addition to this plugin, there is also another Readwise community plugin for Obsidian named **Readwise Mirror**, which can be found at: [https://github.com/jsonMartin/readwise-mirror](https://github.com/jsonMartin/readwise-mirror). Both plugins exist for different use cases, so please read below to determine which best suits your needs.
+
+- Download the **Readwise Mirror** plugin if you want to mirror your entire Readwise Library into Obsidian and sync modifications to previous highlights
+- Download this plugin to import highlights (new highlights only for now) to your library with full control over the ability to modify and format your notes
+
+## Roadmap
+
+You can check the project Roadmap [here](https://github.com/renehernandez/obsidian-readwise/projects/1)
 
 ## Installation
 
@@ -95,11 +106,10 @@ You can install this plugin from `Settings > Community Plugins > Readwise`.
 
 Download zip archive from GitHub releases page. Extract the archive into `<vault>/.obsidian/plugins`.
 
-#
 ### Limitations
 
 * It can only pull the most recent 1000 highlights from Readwise (should be solved eventually as part of the implementation for this issue: [issues/7](https://github.com/renehernandez/obsidian-readwise/issues/7)
 
 ### Compatibility
 
-This plugin is being tested with Obsidian v0.11.9 and up
+To check for the compatibility of different versions, check [versions.json](https://github.com/renehernandez/obsidian-readwise/blob/main/versions.json). All plugin versions newer than the highest specified in the `versions.json` file should be compatible with the same Obsidian version and newer.
