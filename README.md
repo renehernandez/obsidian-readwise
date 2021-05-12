@@ -112,4 +112,4 @@ Download zip archive from GitHub releases page. Extract the archive into `<vault
 
 ### Compatibility
 
-To check for the compatibility of different versions, check [versions.json](https://github.com/renehernandez/obsidian-readwise/blob/main/versions.json)
+To check for the compatibility of different versions, check [versions.json](https://github.com/renehernandez/obsidian-readwise/blob/main/versions.json). All plugin versions newer than the highest specified in the `versions.json` file should be compatible with the same Obsidian version and newer.
