@@ -18,10 +18,11 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Readwise Settings'});
+		containerEl.createEl('h2', {text: 'Readwise Community Settings'});
 
         this.apiTokenSetting();
         this.syncOnBoot();
+        this.syncOnInterval();
         this.highlightStoragePath();
         this.headerTemplatePath();
         this.highlightTemplatePath();
@@ -85,7 +86,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
     syncOnInterval() {
         new Setting(this.containerEl)
             .setName('Sync on Interval')
-            .setDesc('Sync updated highlights on interval. To disable automatic sync specify a negative value or zero (default')
+            .setDesc('Sync updated highlights on interval (hours). To disable automatic sync specify a negative value or zero (default)')
             .addText(text => text
                 .setValue(String(this.plugin.settings.autoSyncInterval))
                 .onChange(async value => {
