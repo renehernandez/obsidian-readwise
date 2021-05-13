@@ -73,6 +73,7 @@ If the custom highlight template doesn't include `highlight_id: <id>`, then this
 
 - `Readwise API Token`: Add/update your Readwise API token.
 - `Sync on startup`: If enabled, will sync highlights from Readwise when Obsidian starts
+- `Sync on interval`: If configured with a value greater than 0, it will sync highlights from Readwise every `X` hours. Useful for folks that leave their Obsidian app open all the time.
 - `Custom Header Template Path`: Path to template note that overrides how the note header is written
 - `Custom Highlight Template Path`: Path to template note that overrides how the highlights are written
 - `Disable Notifications`: Toggle for pop-up notifications
