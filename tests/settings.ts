@@ -31,6 +31,10 @@ describe("Settings", () => {
         it('highlight template path is empty', () => {
             assert.isEmpty(settings.highlightTemplatePath);
         });
+
+        it('intervalSync is set to zero', () => {
+            assert.equal(settings.autoSyncInterval, 0);
+        })
     });
 
     context("withData", () => {
@@ -38,6 +42,7 @@ describe("Settings", () => {
         before(() => {
             settings = ObsidianReadwiseSettingsGenerator.withData({
                 lastUpdate: 10,
+                autoSyncInterval: 3,
                 syncOnBoot: true,
                 headerTemplatePath: 'Hello World',
                 highlightTemplatePath: 'Good Bye',
@@ -64,5 +69,9 @@ describe("Settings", () => {
         it('overrides the disableNotifications field', () => {
             assert.isTrue(settings.disableNotifications);
         });
+
+        it('overrides the autoSyncInterval field', () => {
+            assert.equal(settings.autoSyncInterval, 3);
+        })
     });
 })

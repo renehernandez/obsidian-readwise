@@ -1,5 +1,6 @@
 export interface ObsidianReadwiseSettings {
     syncOnBoot: boolean;
+    autoSyncInterval: number;
     lastUpdate: number;
 	disableNotifications: boolean;
     headerTemplatePath: string;
@@ -16,6 +17,7 @@ export class ObsidianReadwiseSettingsGenerator {
     static defaultSettings(): ObsidianReadwiseSettings {
         return {
             syncOnBoot: false,
+            autoSyncInterval: 0,
             disableNotifications: false,
             headerTemplatePath: "",
             highlightTemplatePath: "",

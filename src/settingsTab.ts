@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import type ObsidianReadwisePlugin from '.';
 import type { TokenManager } from "./tokenManager";
 
@@ -18,10 +18,11 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Readwise Settings'});
+		containerEl.createEl('h2', {text: 'Readwise Community Settings'});
 
         this.apiTokenSetting();
         this.syncOnBoot();
+        this.syncOnInterval();
         this.highlightStoragePath();
         this.headerTemplatePath();
         this.highlightTemplatePath();
@@ -80,6 +81,38 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
                 this.plugin.settings.highlightStoragePath = value;
                 await this.plugin.saveSettings();
             }))
+    }
+
+    syncOnInterval() {
+        new Setting(this.containerEl)
+            .setName('Sync on Interval')
+            .setDesc('Sync updated highlights on interval (hours). To disable automatic sync specify a negative value or zero (default)')
+            .addText(text => text
+                .setValue(String(this.plugin.settings.autoSyncInterval))
+                .onChange(async value => {
+                    if (!isNaN(Number(value))) {
+                        this.plugin.settings.autoSyncInterval = Number(value);
+                        await this.plugin.saveSettings();
+
+                        if (this.plugin.settings.autoSyncInterval > 0) {
+                            this.plugin.clearAutoSync();
+                            this.plugin.startAutoSync(this.plugin.settings.autoSyncInterval);
+                            new Notice(
+                                `Automatic sync enabled! Every ${this.plugin.settings.autoSyncInterval} hours.`
+                            )
+                        }
+                        else if (this.plugin.settings.autoSyncInterval <= 0 && this.plugin.timeoutIdSync) {
+                            this.plugin.clearAutoSync();
+                            new Notice(
+                                "Automatic sync disabled!"
+                            )
+                        }
+                    }
+                    else {
+                        new Notice("Please specify a valid number.")
+                    }
+                })
+        );
     }
 
     headerTemplatePath() {
