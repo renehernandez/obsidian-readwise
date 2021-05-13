@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.7](https://github.com/renehernandez/obsidian-readwise/tree/0.0.7) (2021-05-13)
+
+**Implemented enhancements:**
+
+- Setting option to automatically sync Readwise changes on a given interval [\#33](https://github.com/renehernandez/obsidian-readwise/issues/33)
+
+**Documentation Updates:**
+
+- Mention Readwise Mirror plugin as alternative [\#50](https://github.com/renehernandez/obsidian-readwise/pull/50) ([renehernandez](https://github.com/renehernandez))
+
+**Merged pull requests:**
+
+- Sync on interval [\#51](https://github.com/renehernandez/obsidian-readwise/pull/51) ([renehernandez](https://github.com/renehernandez))
+
 ## [0.0.6](https://github.com/renehernandez/obsidian-readwise/tree/0.0.6) (2021-05-06)
 
 **Implemented enhancements:**
