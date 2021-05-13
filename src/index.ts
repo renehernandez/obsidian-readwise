@@ -60,11 +60,12 @@ export default class ObsidianReadwisePlugin extends Plugin {
             const now = new Date();
             const diff = this.settings.autoSyncInterval - (Math.round(((now.getTime() - this.settings.lastUpdate) / 1000) / 3600 ));
 
-            this.startAutoSync(diff <= 0 ? 0 : diff);
+            this.startAutoSync(diff <= 0 && !this.settings.syncOnBoot ? 0 : diff);
         }
 	}
 
 	async onunload() {
+        window.clearTimeout(this.timeoutIdSync);
 		await this.saveSettings();
 	}
 
