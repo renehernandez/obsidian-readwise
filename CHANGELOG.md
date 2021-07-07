@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.8](https://github.com/renehernandez/obsidian-readwise/tree/0.0.8) (2021-07-07)
+
+**Implemented enhancements:**
+
+- Evaluate using the `Adapter` interface instead of `FileSystemAdapter` concrete class [\#31](https://github.com/renehernandez/obsidian-readwise/issues/31)
+- Mapping of authors in json [\#6](https://github.com/renehernandez/obsidian-readwise/issues/6)
+- Remove FileSystemAdapter concrete class usage [\#59](https://github.com/renehernandez/obsidian-readwise/pull/59) ([renehernandez](https://github.com/renehernandez))
+- Initial authors mapping [\#57](https://github.com/renehernandez/obsidian-readwise/pull/57) ([renehernandez](https://github.com/renehernandez))
+
+**Closed issues:**
+
+- Date format customization? [\#55](https://github.com/renehernandez/obsidian-readwise/issues/55)
+
 ## [0.0.7](https://github.com/renehernandez/obsidian-readwise/tree/0.0.7) (2021-05-13)
 
 **Implemented enhancements:**
