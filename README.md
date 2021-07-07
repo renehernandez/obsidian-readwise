@@ -7,6 +7,7 @@
 - Sync highlights on Obsidian startup
 - Update existing notes with new highlights
 - Customization for note header and highlights through templating
+- Mappings of authors
 
 ## Usage
 
@@ -68,6 +69,23 @@ This can be overwritten by configuring the `Custom Highlight Template Path` sett
 If the custom highlight template doesn't include `highlight_id: <id>`, then this will be appended at the end of the rendered content as `%% highlight_id: <id> %%` (<id> will be replaced by the actual highlight's id).
 
 **Note:** You can find examples of custom templates under [tests/data](./tests/data) folder.
+
+### Mapping of Authors
+
+On plugin load, an `authors.json` file will be created (if not present), under the `obsidian-readwise` plugin folder (`.obsidian/plugins/obsidian-readwise`). There you can define mappings for Readwise author's field value. **This will be applied only during the creation of new notes**
+
+Example mapping:
+
+```json
+{
+   "perell.com": "David Perell",
+   "charity.wtf": "Charity Majors",
+   "@david_perell on Twitter": "David Perell",
+   "@mipsytipsy on Twitter": "Charity Majors"
+}
+```
+
+The above mapping will be applied during the sync process for highlights from a new source (e.g a new article, book, tweets).
 
 ### Settings
 
