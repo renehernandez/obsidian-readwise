@@ -20,7 +20,7 @@ export class FileDoc {
     }
 
     public async createOrUpdate(storagePath: string) {
-        const file = this.filePath(storagePath);
+        const file = this.fsHandler.normalizePath(this.preparePath(storagePath));
 
         var content = '';
 
@@ -43,11 +43,11 @@ export class FileDoc {
         await this.fsHandler.write(file, content);
     }
 
-    public filePath(storagePath: string = ''): string {
+    public preparePath(storagePath: string = ''): string {
         if (storagePath.length > 0 && storagePath.slice(-1) !== '/') {
             storagePath = storagePath + '/';
         }
-        return this.fsHandler.normalizePath(`${storagePath}${this.sanitizeName()}.md`)
+        return `${storagePath}${this.sanitizeName()}.md`
     }
 
     public sanitizeName(): string {

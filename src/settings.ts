@@ -6,6 +6,7 @@ export interface ObsidianReadwiseSettings {
     headerTemplatePath: string;
     highlightStoragePath: string;
     highlightTemplatePath: string;
+    authorsMappingFilename: string;
 }
 
 export class ObsidianReadwiseSettingsGenerator {
@@ -22,6 +23,7 @@ export class ObsidianReadwiseSettingsGenerator {
             headerTemplatePath: "",
             highlightTemplatePath: "",
             highlightStoragePath: "",
+            authorsMappingFilename: "authors.json",
             lastUpdate: Date.now()
         }
     }

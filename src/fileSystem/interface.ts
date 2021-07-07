@@ -6,4 +6,6 @@ export interface IFileSystemHandler {
     write(path: string, data: string): Promise<void>;
 
     exists(path: string): Promise<boolean>;
+
+    pluginsDir(): string;
 }
