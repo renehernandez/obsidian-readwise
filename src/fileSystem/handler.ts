@@ -2,12 +2,12 @@ import * as obsidian from "obsidian";
 import type { IFileSystemHandler } from "./interface";
 
 export class FileSystemHandler implements IFileSystemHandler {
-    adapter: obsidian.FileSystemAdapter;
+    adapter: obsidian.DataAdapter;
     vault: obsidian.Vault;
 
     constructor(vault: obsidian.Vault) {
         this.vault = vault;
-        this.adapter = vault.adapter as obsidian.FileSystemAdapter;
+        this.adapter = vault.adapter;
     }
 
     public normalizePath(path: string): string {
