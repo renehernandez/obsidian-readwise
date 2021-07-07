@@ -1,18 +1,19 @@
 import type { IFileSystemHandler } from "../src/fileSystem";
 import type { IDateFactory, IDateHandler } from "../src/date";
-const moment = require("moment");
 
+const moment = require("moment");
 const fs = require('fs');
 const path = require('path');
 
 export function fileSystemHandler(): IFileSystemHandler {
     return {
-        normalizePath: (path: string) => path,
+        normalizePath: (path: string) => resolvePathToData(path),
         read: async (path: string) => {
             return fs.readFileSync(path).toString();
         },
         write: async (path: string) => {},
-        exists: async (path: string) => true
+        exists: async (path: string) => true,
+        pluginsDir: () => resolvePathToData("plugins")
     }
 }
 

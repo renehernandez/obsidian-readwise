@@ -3,9 +3,11 @@ import type { IFileSystemHandler } from "./interface";
 
 export class FileSystemHandler implements IFileSystemHandler {
     adapter: obsidian.FileSystemAdapter;
+    vault: obsidian.Vault;
 
-    constructor(adapter: obsidian.FileSystemAdapter) {
-        this.adapter = adapter;
+    constructor(vault: obsidian.Vault) {
+        this.vault = vault;
+        this.adapter = vault.adapter as obsidian.FileSystemAdapter;
     }
 
     public normalizePath(path: string): string {
@@ -22,5 +24,9 @@ export class FileSystemHandler implements IFileSystemHandler {
 
     public async exists(path: string): Promise<boolean> {
         return await this.adapter.exists(path);
+    }
+
+    public pluginsDir(): string {
+        return this.normalizePath(`${this.vault.configDir}/plugins`);
     }
 }

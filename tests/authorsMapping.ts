@@ -8,12 +8,11 @@ describe("AuthorsMapping", () => {
 
     context("load", () => {
         it('loads the authors data into object', async () => {
-            const mapping = new AuthorsMapping(resolvePathToData('authors.json'), handler);
+            const authorsMapping = new AuthorsMapping('authors.json', handler);
+            await authorsMapping.initialize();
+            const mapping = await authorsMapping.load();
 
-            const obj = await mapping.load()
-            console.log("Obj:", obj);
-
-            assert.equal(obj.get("perell.com"), "David Perell");
+            assert.equal(mapping.get("perell.com"), "David Perell");
         });
     });
 });

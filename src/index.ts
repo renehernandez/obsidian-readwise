@@ -13,6 +13,7 @@ import { TokenManager } from "./tokenManager";
 import { FileSystemHandler } from "./fileSystem";
 import { DateFactory } from "./date";
 import PromiseQueue from "./promiseQueue";
+import { AuthorsMapping } from "./authorsMapping";
 
 
 export default class ObsidianReadwisePlugin extends Plugin {
@@ -24,6 +25,7 @@ export default class ObsidianReadwisePlugin extends Plugin {
     private api: ReadwiseApi;
     private mode: AppMode;
     private promiseQueue: PromiseQueue;
+    private authorsMapping: AuthorsMapping;
 
 
     setState(state: PluginState) {
@@ -51,6 +53,9 @@ export default class ObsidianReadwisePlugin extends Plugin {
             name: "Sync highlights",
             callback: () => this.promiseQueue.addTask(() => this.syncReadwise(this.settings.lastUpdate)),
         });
+
+        this.authorsMapping = new AuthorsMapping(this.settings.authorsMappingFilename, new FileSystemHandler(this.app.vault));
+        await this.authorsMapping.initialize();
 
 		if (this.settings.syncOnBoot) {
 			await this.syncReadwise(this.settings.lastUpdate);
@@ -116,11 +121,15 @@ export default class ObsidianReadwisePlugin extends Plugin {
 
     async updateNotes(documents: Document[]) {
         this.setState(PluginState.syncing)
-        const handler = new FileSystemHandler(this.app.vault.adapter as FileSystemAdapter);
+        const handler = new FileSystemHandler(this.app.vault);
         const header = await HeaderTemplateRenderer.create(this.settings.headerTemplatePath, handler);
         const highlight = await HighlightTemplateRenderer.create(this.settings.highlightTemplatePath, handler);
+        const mapping = await this.authorsMapping.load();
 
         documents.forEach(doc => {
+            if (mapping.has(doc.author)) {
+                doc.author = mapping.get(doc.author);
+            }
             const fileDoc = new FileDoc(doc, header, highlight, handler);
 
             fileDoc.createOrUpdate(this.settings.highlightStoragePath);
