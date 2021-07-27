@@ -73,7 +73,7 @@ export class ObsidianReadwiseSettingsTab extends PluginSettingTab {
 
     highlightStoragePath() {
         new Setting(this.containerEl)
-        .setName('Highlight storage path')
+        .setName('Highlights Storage Path')
         .setDesc('Path to the directory used to store the notes')
         .addText(text => text
             .setValue(this.plugin.settings.highlightStoragePath)

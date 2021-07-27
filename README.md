@@ -90,8 +90,9 @@ The above mapping will be applied during the sync process for highlights from a 
 ### Settings
 
 - `Readwise API Token`: Add/update your Readwise API token.
-- `Sync on startup`: If enabled, will sync highlights from Readwise when Obsidian starts
-- `Sync on interval`: If configured with a value greater than 0, it will sync highlights from Readwise every `X` hours. Useful for folks that leave their Obsidian app open all the time.
+- `Sync on Startup`: If enabled, will sync highlights from Readwise when Obsidian starts
+- `Sync on Interval`: If configured with a value greater than 0, it will sync highlights from Readwise every `X` hours. Useful for folks that leave their Obsidian app open all the time.
+- `Highlights Storage Path`: Path to location where new highlights/notes will be stored.
 - `Custom Header Template Path`: Path to template note that overrides how the note header is written
 - `Custom Highlight Template Path`: Path to template note that overrides how the highlights are written
 - `Disable Notifications`: Toggle for pop-up notifications
