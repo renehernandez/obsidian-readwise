@@ -50,6 +50,18 @@ describe("File Doc", () => {
             assert.equal(fileDoc.sanitizeName(), 'Hello-World')
         });
 
+        it("replaces |", () => {
+            fileDoc.doc.title = "Hello|World";
+
+            assert.equal(fileDoc.sanitizeName(), 'Hello-World')
+        })
+
+        it("replaces .", () => {
+            fileDoc.doc.title = "Hello.World";
+
+            assert.equal(fileDoc.sanitizeName(), 'Hello_World')
+        })
+
         it("Removes query params, slashes and protocol from URL (http and https)", () => {
             fileDoc.doc.title = "https://example.com/2021-04-26/article-name-12?foo=bar&key=value";
 
