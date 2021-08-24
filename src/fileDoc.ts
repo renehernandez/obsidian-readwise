@@ -51,13 +51,11 @@ export class FileDoc {
     }
 
     public sanitizeName(): string {
-        console.log(`Replacing ${this.doc.title}`);
+        console.log(`Sanitizing ${this.doc.title}`);
         return this.doc.title
             .replace(/(http[s]?\:\/\/)/, '')
-            .replace(/\./g, '_')
-            .replace(/\//g, '-')
             .replace(/(\?.*)/, '') // Remove query params
-            .replace(/\\/g, '-')
-            .replace(/\:/g, '-')
+            .replace(/\./g, '_')
+            .replace(/[\/\\\:\|]/g, '-')
     }
 }
