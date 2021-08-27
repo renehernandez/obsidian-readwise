@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.9](https://github.com/renehernandez/obsidian-readwise/tree/0.0.9) (2021-08-27)
+
+**Implemented enhancements:**
+
+- Can I add date time to note highlight template? [\#65](https://github.com/renehernandez/obsidian-readwise/issues/65)
+- Expand the set of fields that can be used in highlights and headers templates [\#69](https://github.com/renehernandez/obsidian-readwise/pull/69) ([renehernandez](https://github.com/renehernandez))
+
+**Fixed bugs:**
+
+- Sanitize the Pipe \(|\) Character in Titles [\#64](https://github.com/renehernandez/obsidian-readwise/issues/64)
+- Add sanitization for pipe character [\#68](https://github.com/renehernandez/obsidian-readwise/pull/68) ([renehernandez](https://github.com/renehernandez))
+
+**Closed issues:**
+
+- Twitter threads not being synchronised [\#66](https://github.com/renehernandez/obsidian-readwise/issues/66)
+
 ## [0.0.8](https://github.com/renehernandez/obsidian-readwise/tree/0.0.8) (2021-07-07)
 
 **Implemented enhancements:**
