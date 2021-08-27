@@ -1,6 +1,6 @@
 {
   "name": "obsidian-readwise",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Sync Readwise highlights into your notes",
   "repository": {
     "type": "git",
