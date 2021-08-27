@@ -31,7 +31,7 @@ Note: {{ note }}
 describe('TemplateLoader', () => {
     it('loads template without the md extension', async () => {
         const loader = new TemplateLoader(
-            resolvePathToData('Readwise Note Highlight'),
+            resolvePathToData('templates/highlights/Highlight'),
             fileSystemHandler(),
             new HighlightTemplateType()
         );
@@ -45,7 +45,7 @@ Note: {{ note }}
 
     it('loads template with the md extension', async () => {
         const loader = new TemplateLoader(
-            resolvePathToData('Readwise Note Highlight.md'),
+            resolvePathToData('templates/highlights/Highlight.md'),
             fileSystemHandler(),
             new HighlightTemplateType()
         );
@@ -66,7 +66,7 @@ describe("HeaderTemplateRenderer", () => {
 
     before(async () => {
         templateRenderer = await HeaderTemplateRenderer.create(null, handler);
-        customTemplateRenderer = await HeaderTemplateRenderer.create(resolvePathToData('Readwise Note Header'), handler);
+        customTemplateRenderer = await HeaderTemplateRenderer.create(resolvePathToData('templates/headers/Header'), handler);
     })
 
     context('render', () => {
@@ -105,7 +105,7 @@ describe("HeaderTemplateRenderer", () => {
         });
 
         it('renders custom template using num_highlights', async () => {
-            customTemplateRenderer = await HeaderTemplateRenderer.create(resolvePathToData('Readwise Note Header - Num Highlights'), handler);
+            customTemplateRenderer = await HeaderTemplateRenderer.create(resolvePathToData('templates/headers/Num Highlights'), handler);
 
             assert.equal(await customTemplateRenderer.render(doc), `- URL:: https://readwise.io
 - Author:: renehernandez.io
@@ -118,48 +118,53 @@ describe("HeaderTemplateRenderer", () => {
     });
 });
 
-
 describe("HighlightTemplateRenderer", () => {
     const handler = fileSystemHandler();
-    let templateRenderer: HighlightTemplateRenderer;
-    let customTemplateRenderer: HighlightTemplateRenderer;
+    let highlight: Highlight;
 
-    before(async () => {
-        templateRenderer = await HighlightTemplateRenderer.create(null, handler);
-        customTemplateRenderer = await HighlightTemplateRenderer.create(resolvePathToData('Readwise Note Highlight'), handler);
+    before(() => {
+        highlight = new Highlight({
+            id: 10,
+            book_id: 5,
+            text: "Looks important. It's super <great>",
+            note: "It really looks important. Can't wait for it",
+            url: 'https://readwise.io',
+            location: 1,
+            updated: "2020-04-06T12:30:52.318552Z"
+        });
     });
 
-    context('render', () => {
-        let highlight: Highlight;
-        before(() => {
-            highlight = new Highlight({
-                id: 10,
-                book_id: 5,
-                text: "Looks important. It's super <great>",
-                note: "It really looks important. Can't wait for it",
-                url: 'https://readwise.io',
-                location: 1,
-            });
-        });
 
-        it('renders default template with doc', async () => {
-            assert.equal(await templateRenderer.render(highlight), `Looks important. It's super <great> %% highlight_id: 10 %%
+    it('renders default highlight template', async () => {
+        let templateRenderer = await HighlightTemplateRenderer.create(null, handler);
+
+        assert.equal(await templateRenderer.render(highlight), `Looks important. It's super <great> %% highlight_id: 10 %%
 Note: It really looks important. Can't wait for it
 `);
-        });
+    });
 
-        it('renders custom template with doc', async () => {
-            assert.equal(await customTemplateRenderer.render(highlight), `Looks important. It's super <great> \`highlight_id: 10\` %% location: 1 %%
+    it('renders highlight template passed as parameter', async () => {
+        let templateRenderer = await HighlightTemplateRenderer.create(resolvePathToData('templates/highlights/Highlight'), handler);
+
+        assert.equal(await templateRenderer.render(highlight), `Looks important. It's super <great> \`highlight_id: 10\` %% location: 1 %%
 Note: It really looks important. Can't wait for it
 `);
-        });
+    });
 
-        it('adds highlight_id if not present on template', async () => {
-            let customTemplateWithoutIdRenderer = await HighlightTemplateRenderer.create(resolvePathToData('Readwise Note Highlight Missing Id'), handler);
-            assert.equal(await customTemplateWithoutIdRenderer.render(highlight), `Looks important. It's super <great> %% location: 1 %%
+    it('adds highlight_id if not present on template', async () => {
+        let templateRenderer = await HighlightTemplateRenderer.create(resolvePathToData('templates/highlights/Missing Id'), handler);
+
+        assert.equal(await templateRenderer.render(highlight), `Looks important. It's super <great> %% location: 1 %%
 Note: It really looks important. Can't wait for it
 %% highlight_id: 10 %%
 `);
-        });
+    });
+
+    it('prints the updated field as part of the highlight', async () => {
+        let templateRenderer = await HighlightTemplateRenderer.create(resolvePathToData('templates/highlights/Updated Field'), handler);
+
+        assert.equal(await templateRenderer.render(highlight), `Looks important. It's super <great> \`highlight_id: 10\` %% location: 1 %%
+Note: It really looks important. Can't wait for it %% 2020-04-06T12:30:52.318552Z %%
+`);
     });
 });
