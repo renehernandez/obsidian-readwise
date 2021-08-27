@@ -2,6 +2,8 @@
 
 **Obsidian Readwise (Community Plugin)** is an unofficial plugin to synchronize [Readwise](https://readwise.io) highlights into your Obsidian Vault.
 
+**Note:** This plugin requires a subscription with Readwise — a paid service that makes it easy to aggregate and review all your reading data into one place.
+
 ## Features at glance
 
 - Sync highlights on Obsidian startup
@@ -47,6 +49,10 @@ This can be overwritten by configuring the `Custom Header Template Path` setting
 - `category`
 - `updated`
 - `num_highlights`
+- `id`
+- `highlights_url`
+
+You can find the details of these fields in the [Readwise API docs](https://readwise.io/api_deets), under the `Books LIST` section.
 
 #### Highlight Template
 
@@ -65,6 +71,12 @@ This can be overwritten by configuring the `Custom Highlight Template Path` sett
 - `note`
 - `id`
 - `location`
+- `book_id`
+- `url`
+- `location`
+- `updated`
+
+You can find the details of these fields in the [Readwise API docs](https://readwise.io/api_deets), under the `Highlight DETAIL` section.
 
 If the custom highlight template doesn't include `highlight_id: <id>`, then this will be appended at the end of the rendered content as `%% highlight_id: <id> %%` (<id> will be replaced by the actual highlight's id).
 

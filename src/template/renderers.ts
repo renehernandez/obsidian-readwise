@@ -2,7 +2,6 @@ import type nunjucks from "nunjucks";
 
 import type { IFileSystemHandler } from "src/fileSystem";
 import type { Document, Highlight } from "../api/models";
-import { TemplatedDocument, TemplatedHighlight } from "./models";
 import { TemplateLoader } from "./loader";
 import { HeaderTemplateType, HighlightTemplateType } from "./templateTypes";
 
@@ -27,7 +26,7 @@ export class HeaderTemplateRenderer extends BaseTemplateRenderer<Document> {
     }
 
     render(doc: Document): string {
-        return this.template.render(new TemplatedDocument(doc));
+        return this.template.render(doc);
     }
 
     static async create(
@@ -52,9 +51,7 @@ export class HighlightTemplateRenderer extends BaseTemplateRenderer<Highlight> {
     }
 
     render(highlight: Highlight): string {
-        let renderedContent = this.template.render(
-            new TemplatedHighlight(highlight)
-        );
+        let renderedContent = this.template.render(highlight);
 
         if (!renderedContent.includes(`highlight_id: ${highlight.id}`)) {
             renderedContent += `%% highlight_id: ${highlight.id} %%\n`;

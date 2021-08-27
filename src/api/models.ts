@@ -36,6 +36,7 @@ export class Highlight {
     public note: string;
     public url: string;
     public location: number;
+    public updated: string;
 
     constructor(raw: IHighlight) {
         this.id = raw.id;
@@ -44,6 +45,7 @@ export class Highlight {
         this.text = raw.text;
         this.url = raw.url;
         this.location = raw.location;
+        this.updated = raw.updated;
     }
 
     static Parse(ihighs: IHighlight[]): Highlight[] {
